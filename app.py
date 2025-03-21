@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from scraper import scrape_data
+from fetcher import fetch_cve
 
 app = FastAPI(
     title="Cybersecurity Threat Intelligence Bot API",
@@ -7,14 +7,16 @@ app = FastAPI(
     version="0.1",
 )
 
-@app.post("/")
+@app.get("/")
 def read_root():
     return {"message": "Welcome to the Cybersecurity Threat Intelligence API Service!"}
 
-@app.get("/scrape")
-def scrape():
+@app.get("/fetch")
+def fetch_results():
     try:
-        scrape_results=scrape_data()
-        return {"message": "Scraping completed successfully!", "data": scrape_results}
+        results=fetch_cve()
+        return {"message": "Fetched successfully!", "data": results}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+    # OPENAIROUTER_key=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
