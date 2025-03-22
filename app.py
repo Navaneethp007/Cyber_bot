@@ -19,4 +19,3 @@ def fetch_results():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-    # OPENAIROUTER_key=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
