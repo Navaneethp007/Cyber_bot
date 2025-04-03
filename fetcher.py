@@ -29,7 +29,7 @@ import requests
 def fetch_cve():
     url="https://services.nvd.nist.gov/rest/json/cves/2.0"
     params={"resultsPerPage": 30, 
-            "pubStartDate": "2025-01-01T00:00:00.000",
+            "pubStartDate": "2024-01-01T00:00:00.000",
             "pubEndDate": "2025-02-28T00:00:00.000"
             }
     response=requests.get(url, params=params)
@@ -78,6 +78,8 @@ def fetch_cve():
             "Metrics": score
         })
     return results
+
+
                     
 
     
