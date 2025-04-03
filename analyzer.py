@@ -14,12 +14,13 @@ def analyzer():
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
     }
+    str="\n".join([f"CVE ID: {item['CVE_ID']}, Description: {item['Description']}, Published Date: {item['Published_Date']} Last modified: {item['Last_Modified']}, Status:{item['Status']}" for item in res])
     data={
         "model": model,
         "messages": [
             {
                 "role": "user",
-                "content": f"Analyze the following vulnerabilities and provide a brief risk assessment for each {res['CVE_ID']} in {res}"
+                "content": f"Analyze the following vulnerabilities with their details and provide a brief risk assessment for each item in {str}"
             }
         ],
     }

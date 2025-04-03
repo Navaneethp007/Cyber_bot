@@ -28,9 +28,9 @@ import requests
 
 def fetch_cve():
     url="https://services.nvd.nist.gov/rest/json/cves/2.0"
-    params={"resultsPerPage": 30, 
-            "pubStartDate": "2024-01-01T00:00:00.000",
-            "pubEndDate": "2025-02-28T00:00:00.000"
+    params={"resultsPerPage": 50, 
+            "pubStartDate": "2024-12-01T00:00:00.000",
+            "pubEndDate": "2025-03-28T00:00:00.000"
             }
     response=requests.get(url, params=params)
     if response.status_code!=200:
@@ -45,37 +45,37 @@ def fetch_cve():
         status=i.get("cve", {}).get("vulnStatus", "N/A")
         pub_date=i.get("cve", {}).get("published", "N/A")
         last_mod=i.get("cve", {}).get("lastModified", "N/A")
-        score=[]
-        vendor=[]
-        if status=="Analyzed" or status=="Modified":
-            metrics=i.get("metrics", {})
-            cvss=metrics.get("cvssMetricV2", [])
-            for s in cvss:
-                score.append({
-                    "Impact score": s.get("impactScore", "N/A"),
-                    "Base severity": s.get("baseSeverity", "N/A"),
-                    "Exploitability score": s.get("exploitabilityScore", "N/A"),
-                    "CVSS Data": s.get("cvssData", {})
-                })
-            congigurations=i.get("configurations", {})
-            nodes=congigurations.get("nodes", [])
-            for node in nodes:
-                for match in node.get("cpe_match", []):
-                    cpeuri=match.get("cpe23Uri", "N/A")
-                    parts=cpeuri.split(":")
-                    vendor.append({
-                        "vendor": parts[3],
-                        "product": parts[4],
-                        "version": parts[5] if parts[5] else "N/A"
-                    })
+        # score=[]
+        # vendor=[]
+        # if status=="Analyzed" or status=="Modified":
+        #     metrics=i.get("metrics", {})
+        #     cvss=metrics.get("cvssMetricV2", [])
+        #     for s in cvss:
+        #         score.append({
+        #             "Impact score": s.get("impactScore", "N/A"),
+        #             "Base severity": s.get("baseSeverity", "N/A"),
+        #             "Exploitability score": s.get("exploitabilityScore", "N/A"),
+        #             "CVSS Data": s.get("cvssData", {})
+        #         })
+        #     congigurations=i.get("configurations", {})
+        #     nodes=congigurations.get("nodes", [])
+        #     for node in nodes:
+        #         for match in node.get("cpe_match", []):
+        #             cpeuri=match.get("cpe23Uri", "N/A")
+        #             parts=cpeuri.split(":")
+        #             vendor.append({
+        #                 "vendor": parts[3],
+        #                 "product": parts[4],
+        #                 "version": parts[5] if parts[5] else "N/A"
+        #             })
         results.append({
             "CVE_ID": cve_id,
             "Published_Date": pub_date,
             "Last_Modified": last_mod,
             "Description": val,
             "Status": status,
-            "Vendor_products": vendor,
-            "Metrics": score
+            # "Vendor_products": vendor,
+            # "Metrics": score
         })
     return results
 
