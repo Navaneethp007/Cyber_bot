@@ -27,4 +27,4 @@ def analyzer():
     response=requests.post(url, headers=headers, json=data)
     if response.status_code!=200:
         raise Exception(f"Failed to load page {response.status_code}")
-    return response.json()
+    return response.json()["choices"][0]["message"]["content"]

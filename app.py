@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fetcher import fetch_cve
 from analyzer import analyzer
 
+
 app = FastAPI(
     title="Cybersecurity Threat Intelligence Bot API",
     description="API service for scraping and delivering cybersecurity threat data.",
