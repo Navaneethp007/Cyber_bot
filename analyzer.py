@@ -2,6 +2,7 @@ import requests
 from dotenv import load_dotenv
 import os
 from fetcher import fetch_cve
+import json
 
 load_dotenv()
 api_key=os.getenv("OPENAIROUTER_key")
@@ -20,7 +21,8 @@ def analyzer():
         "messages": [
             {
                 "role": "user",
-                "content": f"Analyze the following vulnerabilities with their details and provide a brief risk assessment for each item in {str}"
+                "content": f"Analyze the following vulnerability data: {str}. For each vulnerability, provide a brief risk assessment. Then, format the output as a nested JSON object where the top-level keys are risk categories (Critical, Moderate, Low) and under each category, map each CVE ID to its risk assessment."
+
             }
         ],
     }

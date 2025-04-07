@@ -1,6 +1,7 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fetcher import fetch_cve
 from analyzer import analyzer
+from fastapi.templating import Jinja2Templates
 
 
 app = FastAPI(
@@ -8,23 +9,33 @@ app = FastAPI(
     description="API service for scraping and delivering cybersecurity threat data.",
     version="0.1",
 )
+templates = Jinja2Templates(directory="templates")
 
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Cybersecurity Threat Intelligence API Service!"}
 
 @app.get("/fetch")
-def fetch_results():
+def fetch_results(request: Request):
     try:
         results=fetch_cve()
-        return {"message": "Fetched successfully!", "data": results}
+        # return {"message": "Fetched successfully!", "data": results}
+        return templates.TemplateResponse("fetcher.html", {"request": request, "data": results})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@app.get("/analyze")
-def analyze_results():
+# @app.get("/analyze")
+# def analyze_results():
+#     try:
+#         results=analyzer()
+#         return {"message": "Analysis completed successfully!", "data": results}
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/analysis")
+def view_analysis(request: Request):
     try:
         results=analyzer()
-        return {"message": "Analysis completed successfully!", "data": results}
+        return templates.TemplateResponse("analysis.html", {"request": request, "data": results})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

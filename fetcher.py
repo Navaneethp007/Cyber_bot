@@ -1,17 +1,44 @@
-# from bs4 import BeautifulSoup
+
 import requests
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+api_key=os.getenv("OPENAIROUTER_key")
+model=os.getenv("OPEN_MODEL")
 
 def fetch_cve():
     url="https://services.nvd.nist.gov/rest/json/cves/2.0"
-    params={"resultsPerPage": 50, 
+    params={"resultsPerPage": 20, 
             "pubStartDate": "2024-12-01T00:00:00.000",
             "pubEndDate": "2025-03-28T00:00:00.000"
             }
-    reresponse=requests.get(url, params=params)
-    if reresponse.status_code!=200:
-        raise Exception(f"Failed to load page {reresponse.status_code}")
+    response=requests.get(url, params=params)
+    if response.status_code!=200:
+        raise Exception(f"Failed to load page {response.status_code}")
+    # llm_url="https://openrouter.ai/api/v1/chat/completions"
+    # headers={
+    #     "Authorization": f"Bearer {api_key}",
+    #     "Content-Type": "application/json"
+    # }
+    # data={
+    #     "model": model,
+    #     "messages": [
+    #         {
+    #             "role": "user",
+    #             "content": f"Parse this raw NVD JSON into a clean JSON list with CVE_ID, Description, Status, Published Date, Last Modified Date and CVSS_Score. Make sure to parse it in descending order of published date. {response.json()}"
+    #         }
+    #     ],
+    # }
+    # llm_response=requests.post(llm_url, headers=headers, json=data)
+    # if llm_response.status_code!=200:
+    #     raise Exception(f"Failed to load page {llm_response.status_code}")
+    # data=llm_response.json()["choices"][0]["message"]["content"]
+    # i=data.find("[")
+    # j=data.rfind("]")
+    # return data[i:j+1]
     
-    item=reresponse.json().get("vulnerabilities", [])
+    item=response.json().get("vulnerabilities", [])
     results=[]
     for i in item:
         cve_id=i.get("cve", {}).get("id", "N/A")
@@ -29,6 +56,6 @@ def fetch_cve():
         })
     
     return results
-    # return results
+
 
 
