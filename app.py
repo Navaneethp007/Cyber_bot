@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request
 from fetcher import fetch_cve
 from analyzer import analyzer
+from notifier import notifier_agent
 from fastapi.templating import Jinja2Templates
 
 
@@ -37,5 +38,14 @@ def view_analysis(request: Request):
     try:
         results=analyzer()
         return templates.TemplateResponse("analysis.html", {"request": request, "data": results})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/notify")
+def notify_results():
+    try:
+        results=analyzer()
+        msg=notifier_agent(results)
+        return {"message": msg}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

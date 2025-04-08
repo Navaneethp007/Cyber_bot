@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 from fetcher import fetch_cve
 import json
+import re
 
 load_dotenv()
 api_key=os.getenv("OPENAIROUTER_key")
@@ -18,10 +19,11 @@ def analyzer():
     str="\n".join([f"CVE ID: {item['CVE_ID']}, Description: {item['Description']}, Published Date: {item['Published_Date']} Last modified: {item['Last_Modified']}, Status:{item['Status']}" for item in res])
     data={
         "model": model,
+        "temperature": 0.1,
         "messages": [
             {
                 "role": "user",
-                "content": f"Analyze the following vulnerability data: {str}. For each vulnerability, provide a brief risk assessment. Then, format the output as a nested JSON object where the top-level keys are risk categories (Critical, Moderate, Low) and under each category, map each CVE ID to its risk assessment."
+                "content": f"Analyze the following vulnerability data: {str}. For each vulnerability, provide a brief risk assessment. Then, format the output as a nested JSON object where the top-level keys are risk categories (Critical, Moderate, Low) and under each category, map each CVE ID to its risk assessment and action to be taken."
 
             }
         ],
@@ -29,4 +31,10 @@ def analyzer():
     response=requests.post(url, headers=headers, json=data)
     if response.status_code!=200:
         raise Exception(f"Failed to load page {response.status_code}")
-    return response.json()["choices"][0]["message"]["content"]
+    raw_output = response.json()["choices"][0]["message"]["content"]
+    cleaned_output = re.sub(r"```json\n|```", "", raw_output).strip() 
+
+    try:
+        return json.loads(cleaned_output) 
+    except json.JSONDecodeError:
+        raise Exception("Failed to parse LLM output as JSON")

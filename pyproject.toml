@@ -8,11 +8,12 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    "fastapi (>=0.115.11,<0.116.0)",
+    "fastapi (>=0.115.9,<0.116.0)",
     "uvicorn (>=0.34.0,<0.35.0)",
     "requests (>=2.32.3,<3.0.0)",
     "dotenv (>=0.9.9,<0.10.0)",
     "jinja2 (>=3.1.6,<4.0.0)",
+    "chromadb (>=1.0.3,<2.0.0)",
 ]
 
 
