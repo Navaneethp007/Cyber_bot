@@ -13,7 +13,8 @@ load_dotenv()
 model=os.getenv("OPEN_MODEL")
 api_key=os.getenv("OPENAIROUTER_key")
 
-
+res=analyzer()
+collection = store_in_vector_db(res)
 
 app = FastAPI(
     title="Cybersecurity Threat Intelligence Bot API",
@@ -26,30 +27,21 @@ class ChatRequest(BaseModel):
 templates = Jinja2Templates(directory="templates")
 
 @app.get("/")
-async def read_root():
-    return {"message": "Welcome to the Cybersecurity Threat Intelligence API Service!"}
+async def read_root(request: Request):
+    return templates.TemplateResponse("chat.html", {"request": request})
 
 @app.get("/fetch")
 async def fetch_results(request: Request):
     try:
         results=fetch_cve()
-        # return {"message": "Fetched successfully!", "data": results}
         return templates.TemplateResponse("fetcher.html", {"request": request, "data": results})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-# @app.get("/analyze")
-# def analyze_results():
-#     try:
-#         results=analyzer()
-#         return {"message": "Analysis completed successfully!", "data": results}
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-    
 @app.get("/analysis")
 async def analysis(request: Request):
     try:
-        results=analyzer()
+        results=res
         return templates.TemplateResponse("analysis.html", {"request": request, "data": results})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -57,7 +49,7 @@ async def analysis(request: Request):
 @app.get("/notify")
 async def notify():
     try:
-        results=analyzer()
+        results=res
         msg=notifier_agent(results)
         return {"message": msg}
     except Exception as e:
@@ -66,7 +58,6 @@ async def notify():
 @app.post("/chat")
 async def chat(request: ChatRequest):
     query=request.query
-    collection = store_in_vector_db(analyzer())
     results = query_vector_db(collection, query)
     llm_url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {"Authorization": f"Bearer {api_key}", 
@@ -81,7 +72,7 @@ async def chat(request: ChatRequest):
                 "content": (
                     f"User query: {query}\n"
                     f"Relevant CVE analysis data from ChromaDB: {results}\n"
-                    "Provide a concise response to the user’s query based on this data."
+                    "Provide a concise response to the user's query based on this data."
                 )
             }
         ],

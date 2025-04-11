@@ -4,7 +4,8 @@ from sentence_transformers import SentenceTransformer
 model = SentenceTransformer("all-MiniLM-L6-v2")
 def store_in_vector_db(analyzed_data):
     client = chromadb.Client()
-    collection = client.create_collection("cve_analysis")
+
+    collection = client.get_or_create_collection("cve_analysis")
 
     documents = []
     metadatas = []
@@ -17,8 +18,8 @@ def store_in_vector_db(analyzed_data):
         documents.append(doc)
         metadatas.append(metadata)
         ids.append(cve_id)
-    embed=d_docs = model.encode(documents)
-    collection.add(
+    embed= model.encode(documents)
+    collection.upsert(
         documents=documents,
         embeddings=embed,
         metadatas=metadatas,

@@ -1,17 +1,22 @@
-
 import requests
-from dotenv import load_dotenv
-import os
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
-load_dotenv()
-api_key=os.getenv("OPENAIROUTER_key")
-model=os.getenv("OPEN_MODEL")
+# from dotenv import load_dotenv
+# import os
+# load_dotenv()
+# api_key=os.getenv("OPENAIROUTER_key")
+# model=os.getenv("OPEN_MODEL")
 
 def fetch_cve():
     url="https://services.nvd.nist.gov/rest/json/cves/2.0"
+    # cur_date=datetime.now().strftime("%Y-%m-%d") it is the current date
+    # start_date=(datetime.now()-relativedelta(months=4)).strftime("%Y-%m-%d") # it is the date 4 months back
     params={"resultsPerPage": 20, 
             "pubStartDate": "2024-12-01T00:00:00.000",
             "pubEndDate": "2025-03-28T00:00:00.000"
+            # "pubStartDate": f"{start_date}T00:00:00.000", for recent data use this instead of the above lines
+            # "pubEndDate": f"{cur_date}T00:00:00.000"
             }
     response=requests.get(url, params=params)
     if response.status_code!=200:
