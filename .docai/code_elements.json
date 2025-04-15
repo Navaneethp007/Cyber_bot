@@ -1,0 +1,3771 @@
+{
+  "elements": [
+    {
+      "type": "import_statement",
+      "name": "import_8e41e132",
+      "code": "import requests",
+      "start_line": 1,
+      "start_col": 0,
+      "end_line": 1,
+      "end_col": 15,
+      "file_path": "fetcher.py",
+      "id": "992a9e1168bae0ed176e88b26e664935",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "e687407c2985e72b73cd092589ac2fc3",
+            "name": "fetch_cve",
+            "type": "function",
+            "file": "fetcher.py",
+            "line": 11,
+            "context": "referenced_by",
+            "code": "def fetch_cve():\n    url=\"https://services.nvd.nist.gov/rest/json/cves/2.0\"\n    # cur_date=datetime.now().strftime(\"%Y-%m-%d\") it is the current date\n    # start_date=(datetime.now()-relativedelta(months=4)).strftime(\"%Y-%m-%d\") # it is the date 4 months back\n    params={\"resultsPerPage\": 20, \n            \"pubStartDate\": \"2024-12-01T00:00:00.000\",\n            \"pubEndDate\": \"2025-03-28T00:00:00.000\"\n            # \"pubStartDate\": f\"{start_date}T00:00:00.000\", for recent data use this instead of the above lines\n            # \"pubEndDate\": f\"{cur_date}T00:00:00.000\"\n            }\n    response=requests.get(url, params=params)\n    if response.status_code!=200:\n        raise Exception(f\"Failed to load page {response.status_code}\")\n    # llm_url=\"https://openrouter.ai/api/v1/chat/completions\"\n    # headers={\n    #     \"Authorization\": f\"Bearer {api_key}\",\n    #     \"Content-Type\": \"application/json\"\n    # }\n    # data={\n    #     \"model\": model,\n    #     \"messages\": [\n    #         {\n    #             \"role\": \"user\",\n    #             \"content\": f\"Parse this raw NVD JSON into a clean JSON list with CVE_ID, Description, Status, Published Date, Last Modified Date and CVSS_Score. Make sure to parse it in descending order of published date. {response.json()}\"\n    #         }\n    #     ],\n    # }\n    # llm_response=requests.post(llm_url, headers=headers, json=data)\n    # if llm_response.status_code!=200:\n    #     raise Exception(f\"Failed to load page {llm_response.status_code}\")\n    # data=llm_response.json()[\"choices\"][0][\"message\"][\"content\"]\n    # i=data.find(\"[\")\n    # j=data.rfind(\"]\")\n    # return data[i:j+1]\n\n    item=response.json().get(\"vulnerabilities\", [])\n    results=[]\n    for i in item:\n        cve_id=i.get(\"cve\", {}).get(\"id\", \"N/A\")\n        description=i.get(\"cve\", {}).get(\"descriptions\", [])\n        val=description[0].get(\"value\", \"N/A\")\n        status=i.get(\"cve\", {}).get(\"vulnStatus\", \"N/A\")\n        pub_date=i.get(\"cve\", {}).get(\"published\", \"N/A\")\n        last_mod=i.get(\"cve\", {}).get(\"lastModified\", \"N/A\")\n        results.append({\n            \"CVE_ID\": cve_id,\n            \"Description\": val,\n            \"Published_Date\": pub_date,\n            \"Last_Modified\": last_mod,\n            \"Status\": status\n        })\n\n    return results",
+            "source_location": {
+              "file": "fetcher.py",
+              "start_line": 11,
+              "start_col": 0,
+              "end_line": 63,
+              "end_col": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_5a912383",
+      "code": "from datetime import datetime",
+      "start_line": 2,
+      "start_col": 0,
+      "end_line": 2,
+      "end_col": 29,
+      "file_path": "fetcher.py",
+      "id": "2fa9910748a9fa72c3c9e6c268d99f9c",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "e687407c2985e72b73cd092589ac2fc3",
+            "name": "fetch_cve",
+            "type": "function",
+            "file": "fetcher.py",
+            "line": 11,
+            "context": "referenced_by",
+            "code": "def fetch_cve():\n    url=\"https://services.nvd.nist.gov/rest/json/cves/2.0\"\n    # cur_date=datetime.now().strftime(\"%Y-%m-%d\") it is the current date\n    # start_date=(datetime.now()-relativedelta(months=4)).strftime(\"%Y-%m-%d\") # it is the date 4 months back\n    params={\"resultsPerPage\": 20, \n            \"pubStartDate\": \"2024-12-01T00:00:00.000\",\n            \"pubEndDate\": \"2025-03-28T00:00:00.000\"\n            # \"pubStartDate\": f\"{start_date}T00:00:00.000\", for recent data use this instead of the above lines\n            # \"pubEndDate\": f\"{cur_date}T00:00:00.000\"\n            }\n    response=requests.get(url, params=params)\n    if response.status_code!=200:\n        raise Exception(f\"Failed to load page {response.status_code}\")\n    # llm_url=\"https://openrouter.ai/api/v1/chat/completions\"\n    # headers={\n    #     \"Authorization\": f\"Bearer {api_key}\",\n    #     \"Content-Type\": \"application/json\"\n    # }\n    # data={\n    #     \"model\": model,\n    #     \"messages\": [\n    #         {\n    #             \"role\": \"user\",\n    #             \"content\": f\"Parse this raw NVD JSON into a clean JSON list with CVE_ID, Description, Status, Published Date, Last Modified Date and CVSS_Score. Make sure to parse it in descending order of published date. {response.json()}\"\n    #         }\n    #     ],\n    # }\n    # llm_response=requests.post(llm_url, headers=headers, json=data)\n    # if llm_response.status_code!=200:\n    #     raise Exception(f\"Failed to load page {llm_response.status_code}\")\n    # data=llm_response.json()[\"choices\"][0][\"message\"][\"content\"]\n    # i=data.find(\"[\")\n    # j=data.rfind(\"]\")\n    # return data[i:j+1]\n\n    item=response.json().get(\"vulnerabilities\", [])\n    results=[]\n    for i in item:\n        cve_id=i.get(\"cve\", {}).get(\"id\", \"N/A\")\n        description=i.get(\"cve\", {}).get(\"descriptions\", [])\n        val=description[0].get(\"value\", \"N/A\")\n        status=i.get(\"cve\", {}).get(\"vulnStatus\", \"N/A\")\n        pub_date=i.get(\"cve\", {}).get(\"published\", \"N/A\")\n        last_mod=i.get(\"cve\", {}).get(\"lastModified\", \"N/A\")\n        results.append({\n            \"CVE_ID\": cve_id,\n            \"Description\": val,\n            \"Published_Date\": pub_date,\n            \"Last_Modified\": last_mod,\n            \"Status\": status\n        })\n\n    return results",
+            "source_location": {
+              "file": "fetcher.py",
+              "start_line": 11,
+              "start_col": 0,
+              "end_line": 63,
+              "end_col": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_e356ffe8",
+      "code": "from dateutil.relativedelta import relativedelta",
+      "start_line": 3,
+      "start_col": 0,
+      "end_line": 3,
+      "end_col": 48,
+      "file_path": "fetcher.py",
+      "id": "55c349d92f7131ea12698a418c914279",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "e687407c2985e72b73cd092589ac2fc3",
+            "name": "fetch_cve",
+            "type": "function",
+            "file": "fetcher.py",
+            "line": 11,
+            "context": "referenced_by",
+            "code": "def fetch_cve():\n    url=\"https://services.nvd.nist.gov/rest/json/cves/2.0\"\n    # cur_date=datetime.now().strftime(\"%Y-%m-%d\") it is the current date\n    # start_date=(datetime.now()-relativedelta(months=4)).strftime(\"%Y-%m-%d\") # it is the date 4 months back\n    params={\"resultsPerPage\": 20, \n            \"pubStartDate\": \"2024-12-01T00:00:00.000\",\n            \"pubEndDate\": \"2025-03-28T00:00:00.000\"\n            # \"pubStartDate\": f\"{start_date}T00:00:00.000\", for recent data use this instead of the above lines\n            # \"pubEndDate\": f\"{cur_date}T00:00:00.000\"\n            }\n    response=requests.get(url, params=params)\n    if response.status_code!=200:\n        raise Exception(f\"Failed to load page {response.status_code}\")\n    # llm_url=\"https://openrouter.ai/api/v1/chat/completions\"\n    # headers={\n    #     \"Authorization\": f\"Bearer {api_key}\",\n    #     \"Content-Type\": \"application/json\"\n    # }\n    # data={\n    #     \"model\": model,\n    #     \"messages\": [\n    #         {\n    #             \"role\": \"user\",\n    #             \"content\": f\"Parse this raw NVD JSON into a clean JSON list with CVE_ID, Description, Status, Published Date, Last Modified Date and CVSS_Score. Make sure to parse it in descending order of published date. {response.json()}\"\n    #         }\n    #     ],\n    # }\n    # llm_response=requests.post(llm_url, headers=headers, json=data)\n    # if llm_response.status_code!=200:\n    #     raise Exception(f\"Failed to load page {llm_response.status_code}\")\n    # data=llm_response.json()[\"choices\"][0][\"message\"][\"content\"]\n    # i=data.find(\"[\")\n    # j=data.rfind(\"]\")\n    # return data[i:j+1]\n\n    item=response.json().get(\"vulnerabilities\", [])\n    results=[]\n    for i in item:\n        cve_id=i.get(\"cve\", {}).get(\"id\", \"N/A\")\n        description=i.get(\"cve\", {}).get(\"descriptions\", [])\n        val=description[0].get(\"value\", \"N/A\")\n        status=i.get(\"cve\", {}).get(\"vulnStatus\", \"N/A\")\n        pub_date=i.get(\"cve\", {}).get(\"published\", \"N/A\")\n        last_mod=i.get(\"cve\", {}).get(\"lastModified\", \"N/A\")\n        results.append({\n            \"CVE_ID\": cve_id,\n            \"Description\": val,\n            \"Published_Date\": pub_date,\n            \"Last_Modified\": last_mod,\n            \"Status\": status\n        })\n\n    return results",
+            "source_location": {
+              "file": "fetcher.py",
+              "start_line": 11,
+              "start_col": 0,
+              "end_line": 63,
+              "end_col": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "function",
+      "name": "fetch_cve",
+      "code": "def fetch_cve():\n    url=\"https://services.nvd.nist.gov/rest/json/cves/2.0\"\n    # cur_date=datetime.now().strftime(\"%Y-%m-%d\") it is the current date\n    # start_date=(datetime.now()-relativedelta(months=4)).strftime(\"%Y-%m-%d\") # it is the date 4 months back\n    params={\"resultsPerPage\": 20, \n            \"pubStartDate\": \"2024-12-01T00:00:00.000\",\n            \"pubEndDate\": \"2025-03-28T00:00:00.000\"\n            # \"pubStartDate\": f\"{start_date}T00:00:00.000\", for recent data use this instead of the above lines\n            # \"pubEndDate\": f\"{cur_date}T00:00:00.000\"\n            }\n    response=requests.get(url, params=params)\n    if response.status_code!=200:\n        raise Exception(f\"Failed to load page {response.status_code}\")\n    # llm_url=\"https://openrouter.ai/api/v1/chat/completions\"\n    # headers={\n    #     \"Authorization\": f\"Bearer {api_key}\",\n    #     \"Content-Type\": \"application/json\"\n    # }\n    # data={\n    #     \"model\": model,\n    #     \"messages\": [\n    #         {\n    #             \"role\": \"user\",\n    #             \"content\": f\"Parse this raw NVD JSON into a clean JSON list with CVE_ID, Description, Status, Published Date, Last Modified Date and CVSS_Score. Make sure to parse it in descending order of published date. {response.json()}\"\n    #         }\n    #     ],\n    # }\n    # llm_response=requests.post(llm_url, headers=headers, json=data)\n    # if llm_response.status_code!=200:\n    #     raise Exception(f\"Failed to load page {llm_response.status_code}\")\n    # data=llm_response.json()[\"choices\"][0][\"message\"][\"content\"]\n    # i=data.find(\"[\")\n    # j=data.rfind(\"]\")\n    # return data[i:j+1]\n\n    item=response.json().get(\"vulnerabilities\", [])\n    results=[]\n    for i in item:\n        cve_id=i.get(\"cve\", {}).get(\"id\", \"N/A\")\n        description=i.get(\"cve\", {}).get(\"descriptions\", [])\n        val=description[0].get(\"value\", \"N/A\")\n        status=i.get(\"cve\", {}).get(\"vulnStatus\", \"N/A\")\n        pub_date=i.get(\"cve\", {}).get(\"published\", \"N/A\")\n        last_mod=i.get(\"cve\", {}).get(\"lastModified\", \"N/A\")\n        results.append({\n            \"CVE_ID\": cve_id,\n            \"Description\": val,\n            \"Published_Date\": pub_date,\n            \"Last_Modified\": last_mod,\n            \"Status\": status\n        })\n\n    return results",
+      "start_line": 11,
+      "start_col": 0,
+      "end_line": 63,
+      "end_col": 18,
+      "file_path": "fetcher.py",
+      "id": "e687407c2985e72b73cd092589ac2fc3",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_8e41e132",
+              "type": "import_reference",
+              "id": "992a9e1168bae0ed176e88b26e664935",
+              "file": "fetcher.py",
+              "line": 1,
+              "context": "import_dependency",
+              "code": "import requests",
+              "source_location": {
+                "file": "fetcher.py",
+                "start_line": 1,
+                "start_col": 0,
+                "end_line": 1,
+                "end_col": 15
+              }
+            },
+            {
+              "name": "import_5a912383",
+              "type": "import_reference",
+              "id": "2fa9910748a9fa72c3c9e6c268d99f9c",
+              "file": "fetcher.py",
+              "line": 2,
+              "context": "import_dependency",
+              "code": "from datetime import datetime",
+              "source_location": {
+                "file": "fetcher.py",
+                "start_line": 2,
+                "start_col": 0,
+                "end_line": 2,
+                "end_col": 29
+              }
+            },
+            {
+              "name": "import_e356ffe8",
+              "type": "import_reference",
+              "id": "55c349d92f7131ea12698a418c914279",
+              "file": "fetcher.py",
+              "line": 3,
+              "context": "import_dependency",
+              "code": "from dateutil.relativedelta import relativedelta",
+              "source_location": {
+                "file": "fetcher.py",
+                "start_line": 3,
+                "start_col": 0,
+                "end_line": 3,
+                "end_col": 48
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_da6c0a49",
+      "code": "from fastapi import FastAPI, HTTPException, Request",
+      "start_line": 1,
+      "start_col": 0,
+      "end_line": 1,
+      "end_col": 51,
+      "file_path": "app.py",
+      "id": "c4747ccedde1b4dd6fcd25b9d02fc418",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "4598446ce01f668c95b14fddb99ad105",
+            "name": "app",
+            "type": "variable_definition",
+            "file": "app.py",
+            "line": 19,
+            "context": "referenced_by",
+            "code": "app = FastAPI(\n    title=\"Cybersecurity Threat Intelligence Bot API\",\n    description=\"API service for scraping and delivering cybersecurity threat data.\",\n    version=\"0.1\",\n)",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 19,
+              "start_col": 0,
+              "end_line": 23,
+              "end_col": 1
+            }
+          },
+          {
+            "id": "a47132f9d8c2f50a9caf28181d94f701",
+            "name": "ChatRequest",
+            "type": "class",
+            "file": "app.py",
+            "line": 24,
+            "context": "referenced_by",
+            "code": "class ChatRequest(BaseModel):\n    query: str",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 24,
+              "start_col": 0,
+              "end_line": 25,
+              "end_col": 14
+            }
+          },
+          {
+            "id": "7d6562547ea3222114d82197fd1c219b",
+            "name": "read_root",
+            "type": "function",
+            "file": "app.py",
+            "line": 30,
+            "context": "referenced_by",
+            "code": "async def read_root(request: Request):\n    return templates.TemplateResponse(\"chat.html\", {\"request\": request})",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 30,
+              "start_col": 0,
+              "end_line": 31,
+              "end_col": 72
+            }
+          },
+          {
+            "id": "37bbd8e97f3822c40a61cc0d50e382ae",
+            "name": "fetch_results",
+            "type": "function",
+            "file": "app.py",
+            "line": 34,
+            "context": "referenced_by",
+            "code": "async def fetch_results(request: Request):\n    try:\n        results=fetch_cve()\n        return templates.TemplateResponse(\"fetcher.html\", {\"request\": request, \"data\": results})\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 34,
+              "start_col": 0,
+              "end_line": 39,
+              "end_col": 59
+            }
+          },
+          {
+            "id": "bb40d961498651d35e5ad18fd8bd733d",
+            "name": "analysis",
+            "type": "function",
+            "file": "app.py",
+            "line": 42,
+            "context": "referenced_by",
+            "code": "async def analysis(request: Request):\n    try:\n        results=res\n        return templates.TemplateResponse(\"analysis.html\", {\"request\": request, \"data\": results})\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 42,
+              "start_col": 0,
+              "end_line": 47,
+              "end_col": 59
+            }
+          },
+          {
+            "id": "53a008924ced4f322300409b6fd96dd3",
+            "name": "notify",
+            "type": "function",
+            "file": "app.py",
+            "line": 50,
+            "context": "referenced_by",
+            "code": "async def notify():\n    try:\n        results=res\n        msg=notifier_agent(results)\n        return {\"message\": msg}\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 50,
+              "start_col": 0,
+              "end_line": 56,
+              "end_col": 59
+            }
+          },
+          {
+            "id": "710acbc7a542b6ed4e71fb95a45d3947",
+            "name": "chat",
+            "type": "function",
+            "file": "app.py",
+            "line": 59,
+            "context": "referenced_by",
+            "code": "async def chat(request: ChatRequest):\n    query=request.query\n    results = query_vector_db(collection, query)\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \n               \"Content-Type\": \"application/json\"\n            }\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"User query: {query}\\n\"\n                    f\"Relevant CVE analysis data from ChromaDB: {results}\\n\"\n                    \"Provide a concise response to the user's query based on this data.\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        return {\"error\": f\"LLM failed: {response.status_code}\"}\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    return {\"response\": llm_output}",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 59,
+              "start_col": 0,
+              "end_line": 85,
+              "end_col": 35
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_9f66e645",
+      "code": "from fetcher import fetch_cve",
+      "start_line": 2,
+      "start_col": 0,
+      "end_line": 2,
+      "end_col": 29,
+      "file_path": "app.py",
+      "id": "c051ff350e5e2d6998085b10f00086e0",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "37bbd8e97f3822c40a61cc0d50e382ae",
+            "name": "fetch_results",
+            "type": "function",
+            "file": "app.py",
+            "line": 34,
+            "context": "referenced_by",
+            "code": "async def fetch_results(request: Request):\n    try:\n        results=fetch_cve()\n        return templates.TemplateResponse(\"fetcher.html\", {\"request\": request, \"data\": results})\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 34,
+              "start_col": 0,
+              "end_line": 39,
+              "end_col": 59
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_451f0d82",
+      "code": "from analyzer import analyzer",
+      "start_line": 3,
+      "start_col": 0,
+      "end_line": 3,
+      "end_col": 29,
+      "file_path": "app.py",
+      "id": "76b501380bdca0bfe6657dcb5a96ec46",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "f05ae714b638d34e5d4808a443ad7c2f",
+            "name": "res",
+            "type": "variable_definition",
+            "file": "app.py",
+            "line": 16,
+            "context": "referenced_by",
+            "code": "res=analyzer()",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 16,
+              "start_col": 0,
+              "end_line": 16,
+              "end_col": 14
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_d5091adc",
+      "code": "from notifier import notifier_agent",
+      "start_line": 4,
+      "start_col": 0,
+      "end_line": 4,
+      "end_col": 35,
+      "file_path": "app.py",
+      "id": "9f5a03d0517eb7bcfcf6ae1b964bc342",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "53a008924ced4f322300409b6fd96dd3",
+            "name": "notify",
+            "type": "function",
+            "file": "app.py",
+            "line": 50,
+            "context": "referenced_by",
+            "code": "async def notify():\n    try:\n        results=res\n        msg=notifier_agent(results)\n        return {\"message\": msg}\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 50,
+              "start_col": 0,
+              "end_line": 56,
+              "end_col": 59
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_dbbac710",
+      "code": "from vector import store_in_vector_db, query_vector_db",
+      "start_line": 5,
+      "start_col": 0,
+      "end_line": 5,
+      "end_col": 54,
+      "file_path": "app.py",
+      "id": "80b4ae26e1258af0ec6dcacc1861ab0f",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "41863be62d43b04935710a989abb65af",
+            "name": "collection",
+            "type": "variable_definition",
+            "file": "app.py",
+            "line": 17,
+            "context": "referenced_by",
+            "code": "collection = store_in_vector_db(res)",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 17,
+              "start_col": 0,
+              "end_line": 17,
+              "end_col": 36
+            }
+          },
+          {
+            "id": "710acbc7a542b6ed4e71fb95a45d3947",
+            "name": "chat",
+            "type": "function",
+            "file": "app.py",
+            "line": 59,
+            "context": "referenced_by",
+            "code": "async def chat(request: ChatRequest):\n    query=request.query\n    results = query_vector_db(collection, query)\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \n               \"Content-Type\": \"application/json\"\n            }\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"User query: {query}\\n\"\n                    f\"Relevant CVE analysis data from ChromaDB: {results}\\n\"\n                    \"Provide a concise response to the user's query based on this data.\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        return {\"error\": f\"LLM failed: {response.status_code}\"}\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    return {\"response\": llm_output}",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 59,
+              "start_col": 0,
+              "end_line": 85,
+              "end_col": 35
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_8276f225",
+      "code": "from fastapi.templating import Jinja2Templates",
+      "start_line": 6,
+      "start_col": 0,
+      "end_line": 6,
+      "end_col": 46,
+      "file_path": "app.py",
+      "id": "bbaa9d3aaa0f2cf6474d227d01e14347",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "1c6048a27ae3802cb07e355021452e38",
+            "name": "templates",
+            "type": "variable_definition",
+            "file": "app.py",
+            "line": 27,
+            "context": "referenced_by",
+            "code": "templates = Jinja2Templates(directory=\"templates\")",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 27,
+              "start_col": 0,
+              "end_line": 27,
+              "end_col": 50
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_8e41e132",
+      "code": "import requests",
+      "start_line": 7,
+      "start_col": 0,
+      "end_line": 7,
+      "end_col": 15,
+      "file_path": "app.py",
+      "id": "b85d57b92fff7f7c7af757f2ad4cae65",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "710acbc7a542b6ed4e71fb95a45d3947",
+            "name": "chat",
+            "type": "function",
+            "file": "app.py",
+            "line": 59,
+            "context": "referenced_by",
+            "code": "async def chat(request: ChatRequest):\n    query=request.query\n    results = query_vector_db(collection, query)\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \n               \"Content-Type\": \"application/json\"\n            }\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"User query: {query}\\n\"\n                    f\"Relevant CVE analysis data from ChromaDB: {results}\\n\"\n                    \"Provide a concise response to the user's query based on this data.\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        return {\"error\": f\"LLM failed: {response.status_code}\"}\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    return {\"response\": llm_output}",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 59,
+              "start_col": 0,
+              "end_line": 85,
+              "end_col": 35
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_ed9f4b8f",
+      "code": "import os",
+      "start_line": 8,
+      "start_col": 0,
+      "end_line": 8,
+      "end_col": 9,
+      "file_path": "app.py",
+      "id": "08b858b586f3e38288fd0cc6d8f2d6e9",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "075dacdf8723934a0b612f3f6c1533a8",
+            "name": "model",
+            "type": "variable_definition",
+            "file": "app.py",
+            "line": 13,
+            "context": "referenced_by",
+            "code": "model=os.getenv(\"OPEN_MODEL\")",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 13,
+              "start_col": 0,
+              "end_line": 13,
+              "end_col": 29
+            }
+          },
+          {
+            "id": "3c7690b9663185b38fbf855c6fb6b4d8",
+            "name": "api_key",
+            "type": "variable_definition",
+            "file": "app.py",
+            "line": 14,
+            "context": "referenced_by",
+            "code": "api_key=os.getenv(\"OPENAIROUTER_key\")",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 14,
+              "start_col": 0,
+              "end_line": 14,
+              "end_col": 37
+            }
+          },
+          {
+            "id": "710acbc7a542b6ed4e71fb95a45d3947",
+            "name": "chat",
+            "type": "function",
+            "file": "app.py",
+            "line": 59,
+            "context": "referenced_by",
+            "code": "async def chat(request: ChatRequest):\n    query=request.query\n    results = query_vector_db(collection, query)\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \n               \"Content-Type\": \"application/json\"\n            }\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"User query: {query}\\n\"\n                    f\"Relevant CVE analysis data from ChromaDB: {results}\\n\"\n                    \"Provide a concise response to the user's query based on this data.\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        return {\"error\": f\"LLM failed: {response.status_code}\"}\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    return {\"response\": llm_output}",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 59,
+              "start_col": 0,
+              "end_line": 85,
+              "end_col": 35
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_a019f79b",
+      "code": "from dotenv import load_dotenv",
+      "start_line": 9,
+      "start_col": 0,
+      "end_line": 9,
+      "end_col": 30,
+      "file_path": "app.py",
+      "id": "b7257bc41b667128d08c35bb9f030a5c",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_ce6a500d",
+      "code": "from pydantic import BaseModel",
+      "start_line": 10,
+      "start_col": 0,
+      "end_line": 10,
+      "end_col": 30,
+      "file_path": "app.py",
+      "id": "f578335caa5671d6ec61a2ce0b13e59f",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "a47132f9d8c2f50a9caf28181d94f701",
+            "name": "ChatRequest",
+            "type": "class",
+            "file": "app.py",
+            "line": 24,
+            "context": "referenced_by",
+            "code": "class ChatRequest(BaseModel):\n    query: str",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 24,
+              "start_col": 0,
+              "end_line": 25,
+              "end_col": 14
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "model",
+      "code": "model=os.getenv(\"OPEN_MODEL\")",
+      "start_line": 13,
+      "start_col": 0,
+      "end_line": 13,
+      "end_col": 29,
+      "file_path": "app.py",
+      "id": "075dacdf8723934a0b612f3f6c1533a8",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_ed9f4b8f",
+              "type": "import_reference",
+              "id": "08b858b586f3e38288fd0cc6d8f2d6e9",
+              "file": "app.py",
+              "line": 8,
+              "context": "import_dependency",
+              "code": "import os",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 8,
+                "start_col": 0,
+                "end_line": 8,
+                "end_col": 9
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "chat": {
+            "id": "710acbc7a542b6ed4e71fb95a45d3947",
+            "name": "chat",
+            "type": "function",
+            "file": "app.py",
+            "line": 59,
+            "context": "referenced_by_variable",
+            "code": "async def chat(request: ChatRequest):\n    query=request.query\n    results = query_vector_db(collection, query)\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \n               \"Content-Type\": \"application/json\"\n            }\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"User query: {query}\\n\"\n                    f\"Relevant CVE analysis data from ChromaDB: {results}\\n\"\n                    \"Provide a concise response to the user's query based on this data.\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        return {\"error\": f\"LLM failed: {response.status_code}\"}\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    return {\"response\": llm_output}",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 59,
+              "start_col": 0,
+              "end_line": 85,
+              "end_col": 35
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "api_key",
+      "code": "api_key=os.getenv(\"OPENAIROUTER_key\")",
+      "start_line": 14,
+      "start_col": 0,
+      "end_line": 14,
+      "end_col": 37,
+      "file_path": "app.py",
+      "id": "3c7690b9663185b38fbf855c6fb6b4d8",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_ed9f4b8f",
+              "type": "import_reference",
+              "id": "08b858b586f3e38288fd0cc6d8f2d6e9",
+              "file": "app.py",
+              "line": 8,
+              "context": "import_dependency",
+              "code": "import os",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 8,
+                "start_col": 0,
+                "end_line": 8,
+                "end_col": 9
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "chat": {
+            "id": "710acbc7a542b6ed4e71fb95a45d3947",
+            "name": "chat",
+            "type": "function",
+            "file": "app.py",
+            "line": 59,
+            "context": "referenced_by_variable",
+            "code": "async def chat(request: ChatRequest):\n    query=request.query\n    results = query_vector_db(collection, query)\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \n               \"Content-Type\": \"application/json\"\n            }\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"User query: {query}\\n\"\n                    f\"Relevant CVE analysis data from ChromaDB: {results}\\n\"\n                    \"Provide a concise response to the user's query based on this data.\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        return {\"error\": f\"LLM failed: {response.status_code}\"}\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    return {\"response\": llm_output}",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 59,
+              "start_col": 0,
+              "end_line": 85,
+              "end_col": 35
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "res",
+      "code": "res=analyzer()",
+      "start_line": 16,
+      "start_col": 0,
+      "end_line": 16,
+      "end_col": 14,
+      "file_path": "app.py",
+      "id": "f05ae714b638d34e5d4808a443ad7c2f",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_451f0d82",
+              "type": "import_reference",
+              "id": "76b501380bdca0bfe6657dcb5a96ec46",
+              "file": "app.py",
+              "line": 3,
+              "context": "import_dependency",
+              "code": "from analyzer import analyzer",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 3,
+                "start_col": 0,
+                "end_line": 3,
+                "end_col": 29
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "collection": {
+            "id": "41863be62d43b04935710a989abb65af",
+            "name": "collection",
+            "type": "variable_definition",
+            "file": "app.py",
+            "line": 17,
+            "context": "referenced_by_variable",
+            "code": "collection = store_in_vector_db(res)",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 17,
+              "start_col": 0,
+              "end_line": 17,
+              "end_col": 36
+            }
+          },
+          "analysis": {
+            "id": "bb40d961498651d35e5ad18fd8bd733d",
+            "name": "analysis",
+            "type": "function",
+            "file": "app.py",
+            "line": 42,
+            "context": "referenced_by_variable",
+            "code": "async def analysis(request: Request):\n    try:\n        results=res\n        return templates.TemplateResponse(\"analysis.html\", {\"request\": request, \"data\": results})\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 42,
+              "start_col": 0,
+              "end_line": 47,
+              "end_col": 59
+            }
+          },
+          "notify": {
+            "id": "53a008924ced4f322300409b6fd96dd3",
+            "name": "notify",
+            "type": "function",
+            "file": "app.py",
+            "line": 50,
+            "context": "referenced_by_variable",
+            "code": "async def notify():\n    try:\n        results=res\n        msg=notifier_agent(results)\n        return {\"message\": msg}\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 50,
+              "start_col": 0,
+              "end_line": 56,
+              "end_col": 59
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "collection",
+      "code": "collection = store_in_vector_db(res)",
+      "start_line": 17,
+      "start_col": 0,
+      "end_line": 17,
+      "end_col": 36,
+      "file_path": "app.py",
+      "id": "41863be62d43b04935710a989abb65af",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {
+            "res": {
+              "id": "f05ae714b638d34e5d4808a443ad7c2f",
+              "name": "res",
+              "type": "variable",
+              "file": "app.py",
+              "line": 16,
+              "context": "variable_reference",
+              "source_code": "res",
+              "code": "res=analyzer()",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 17,
+                "start_col": 32,
+                "end_line": 17,
+                "end_col": 35
+              }
+            }
+          },
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_dbbac710",
+              "type": "import_reference",
+              "id": "80b4ae26e1258af0ec6dcacc1861ab0f",
+              "file": "app.py",
+              "line": 5,
+              "context": "import_dependency",
+              "code": "from vector import store_in_vector_db, query_vector_db",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 5,
+                "start_col": 0,
+                "end_line": 5,
+                "end_col": 54
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "chat": {
+            "id": "710acbc7a542b6ed4e71fb95a45d3947",
+            "name": "chat",
+            "type": "function",
+            "file": "app.py",
+            "line": 59,
+            "context": "referenced_by_variable",
+            "code": "async def chat(request: ChatRequest):\n    query=request.query\n    results = query_vector_db(collection, query)\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \n               \"Content-Type\": \"application/json\"\n            }\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"User query: {query}\\n\"\n                    f\"Relevant CVE analysis data from ChromaDB: {results}\\n\"\n                    \"Provide a concise response to the user's query based on this data.\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        return {\"error\": f\"LLM failed: {response.status_code}\"}\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    return {\"response\": llm_output}",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 59,
+              "start_col": 0,
+              "end_line": 85,
+              "end_col": 35
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "app",
+      "code": "app = FastAPI(\n    title=\"Cybersecurity Threat Intelligence Bot API\",\n    description=\"API service for scraping and delivering cybersecurity threat data.\",\n    version=\"0.1\",\n)",
+      "start_line": 19,
+      "start_col": 0,
+      "end_line": 23,
+      "end_col": 1,
+      "file_path": "app.py",
+      "id": "4598446ce01f668c95b14fddb99ad105",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_da6c0a49",
+              "type": "import_reference",
+              "id": "c4747ccedde1b4dd6fcd25b9d02fc418",
+              "file": "app.py",
+              "line": 1,
+              "context": "import_dependency",
+              "code": "from fastapi import FastAPI, HTTPException, Request",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 1,
+                "start_col": 0,
+                "end_line": 1,
+                "end_col": 51
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "class",
+      "name": "ChatRequest",
+      "code": "class ChatRequest(BaseModel):\n    query: str",
+      "start_line": 24,
+      "start_col": 0,
+      "end_line": 25,
+      "end_col": 14,
+      "file_path": "app.py",
+      "id": "a47132f9d8c2f50a9caf28181d94f701",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {
+            "query": {
+              "id": "06acc4a6aa66ac01f7b0fab242a548f4",
+              "name": "query",
+              "type": "variable",
+              "file": "app.py",
+              "line": 25,
+              "context": "variable_reference",
+              "source_code": "query",
+              "code": "query: str",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 25,
+                "start_col": 4,
+                "end_line": 25,
+                "end_col": 9
+              }
+            }
+          },
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_da6c0a49",
+              "type": "import_reference",
+              "id": "c4747ccedde1b4dd6fcd25b9d02fc418",
+              "file": "app.py",
+              "line": 1,
+              "context": "import_dependency",
+              "code": "from fastapi import FastAPI, HTTPException, Request",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 1,
+                "start_col": 0,
+                "end_line": 1,
+                "end_col": 51
+              }
+            },
+            {
+              "name": "import_ce6a500d",
+              "type": "import_reference",
+              "id": "f578335caa5671d6ec61a2ce0b13e59f",
+              "file": "app.py",
+              "line": 10,
+              "context": "import_dependency",
+              "code": "from pydantic import BaseModel",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 10,
+                "start_col": 0,
+                "end_line": 10,
+                "end_col": 30
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {
+          "chat": {
+            "id": "710acbc7a542b6ed4e71fb95a45d3947",
+            "name": "chat",
+            "type": "function",
+            "file": "app.py",
+            "line": 59,
+            "context": "referenced_by_class",
+            "code": "async def chat(request: ChatRequest):\n    query=request.query\n    results = query_vector_db(collection, query)\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \n               \"Content-Type\": \"application/json\"\n            }\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"User query: {query}\\n\"\n                    f\"Relevant CVE analysis data from ChromaDB: {results}\\n\"\n                    \"Provide a concise response to the user's query based on this data.\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        return {\"error\": f\"LLM failed: {response.status_code}\"}\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    return {\"response\": llm_output}",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 59,
+              "start_col": 0,
+              "end_line": 85,
+              "end_col": 35
+            }
+          }
+        },
+        "variables": {
+          "chat": {
+            "id": "710acbc7a542b6ed4e71fb95a45d3947",
+            "name": "chat",
+            "type": "function",
+            "file": "app.py",
+            "line": 59,
+            "context": "referenced_by_variable",
+            "code": "async def chat(request: ChatRequest):\n    query=request.query\n    results = query_vector_db(collection, query)\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \n               \"Content-Type\": \"application/json\"\n            }\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"User query: {query}\\n\"\n                    f\"Relevant CVE analysis data from ChromaDB: {results}\\n\"\n                    \"Provide a concise response to the user's query based on this data.\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        return {\"error\": f\"LLM failed: {response.status_code}\"}\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    return {\"response\": llm_output}",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 59,
+              "start_col": 0,
+              "end_line": 85,
+              "end_col": 35
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "query",
+      "code": "query: str",
+      "start_line": 25,
+      "start_col": 4,
+      "end_line": 25,
+      "end_col": 14,
+      "file_path": "app.py",
+      "id": "06acc4a6aa66ac01f7b0fab242a548f4",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "ChatRequest": {
+            "id": "a47132f9d8c2f50a9caf28181d94f701",
+            "name": "ChatRequest",
+            "type": "class",
+            "file": "app.py",
+            "line": 24,
+            "context": "referenced_by_variable",
+            "code": "class ChatRequest(BaseModel):\n    query: str",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 24,
+              "start_col": 0,
+              "end_line": 25,
+              "end_col": 14
+            }
+          },
+          "chat": {
+            "id": "710acbc7a542b6ed4e71fb95a45d3947",
+            "name": "chat",
+            "type": "function",
+            "file": "app.py",
+            "line": 59,
+            "context": "referenced_by_variable",
+            "code": "async def chat(request: ChatRequest):\n    query=request.query\n    results = query_vector_db(collection, query)\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \n               \"Content-Type\": \"application/json\"\n            }\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"User query: {query}\\n\"\n                    f\"Relevant CVE analysis data from ChromaDB: {results}\\n\"\n                    \"Provide a concise response to the user's query based on this data.\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        return {\"error\": f\"LLM failed: {response.status_code}\"}\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    return {\"response\": llm_output}",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 59,
+              "start_col": 0,
+              "end_line": 85,
+              "end_col": 35
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "templates",
+      "code": "templates = Jinja2Templates(directory=\"templates\")",
+      "start_line": 27,
+      "start_col": 0,
+      "end_line": 27,
+      "end_col": 50,
+      "file_path": "app.py",
+      "id": "1c6048a27ae3802cb07e355021452e38",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_8276f225",
+              "type": "import_reference",
+              "id": "bbaa9d3aaa0f2cf6474d227d01e14347",
+              "file": "app.py",
+              "line": 6,
+              "context": "import_dependency",
+              "code": "from fastapi.templating import Jinja2Templates",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 6,
+                "start_col": 0,
+                "end_line": 6,
+                "end_col": 46
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "read_root": {
+            "id": "7d6562547ea3222114d82197fd1c219b",
+            "name": "read_root",
+            "type": "function",
+            "file": "app.py",
+            "line": 30,
+            "context": "referenced_by_variable",
+            "code": "async def read_root(request: Request):\n    return templates.TemplateResponse(\"chat.html\", {\"request\": request})",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 30,
+              "start_col": 0,
+              "end_line": 31,
+              "end_col": 72
+            }
+          },
+          "fetch_results": {
+            "id": "37bbd8e97f3822c40a61cc0d50e382ae",
+            "name": "fetch_results",
+            "type": "function",
+            "file": "app.py",
+            "line": 34,
+            "context": "referenced_by_variable",
+            "code": "async def fetch_results(request: Request):\n    try:\n        results=fetch_cve()\n        return templates.TemplateResponse(\"fetcher.html\", {\"request\": request, \"data\": results})\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 34,
+              "start_col": 0,
+              "end_line": 39,
+              "end_col": 59
+            }
+          },
+          "analysis": {
+            "id": "bb40d961498651d35e5ad18fd8bd733d",
+            "name": "analysis",
+            "type": "function",
+            "file": "app.py",
+            "line": 42,
+            "context": "referenced_by_variable",
+            "code": "async def analysis(request: Request):\n    try:\n        results=res\n        return templates.TemplateResponse(\"analysis.html\", {\"request\": request, \"data\": results})\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))",
+            "source_location": {
+              "file": "app.py",
+              "start_line": 42,
+              "start_col": 0,
+              "end_line": 47,
+              "end_col": 59
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "function",
+      "name": "read_root",
+      "code": "async def read_root(request: Request):\n    return templates.TemplateResponse(\"chat.html\", {\"request\": request})",
+      "start_line": 30,
+      "start_col": 0,
+      "end_line": 31,
+      "end_col": 72,
+      "file_path": "app.py",
+      "id": "7d6562547ea3222114d82197fd1c219b",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {
+            "templates": {
+              "id": "1c6048a27ae3802cb07e355021452e38",
+              "name": "templates",
+              "type": "variable",
+              "file": "app.py",
+              "line": 27,
+              "context": "variable_reference",
+              "source_code": "templates",
+              "code": "templates = Jinja2Templates(directory=\"templates\")",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 31,
+                "start_col": 11,
+                "end_line": 31,
+                "end_col": 20
+              }
+            }
+          },
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_da6c0a49",
+              "type": "import_reference",
+              "id": "c4747ccedde1b4dd6fcd25b9d02fc418",
+              "file": "app.py",
+              "line": 1,
+              "context": "import_dependency",
+              "code": "from fastapi import FastAPI, HTTPException, Request",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 1,
+                "start_col": 0,
+                "end_line": 1,
+                "end_col": 51
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "function",
+      "name": "fetch_results",
+      "code": "async def fetch_results(request: Request):\n    try:\n        results=fetch_cve()\n        return templates.TemplateResponse(\"fetcher.html\", {\"request\": request, \"data\": results})\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))",
+      "start_line": 34,
+      "start_col": 0,
+      "end_line": 39,
+      "end_col": 59,
+      "file_path": "app.py",
+      "id": "37bbd8e97f3822c40a61cc0d50e382ae",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {
+            "templates": {
+              "id": "1c6048a27ae3802cb07e355021452e38",
+              "name": "templates",
+              "type": "variable",
+              "file": "app.py",
+              "line": 27,
+              "context": "variable_reference",
+              "source_code": "templates",
+              "code": "templates = Jinja2Templates(directory=\"templates\")",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 37,
+                "start_col": 15,
+                "end_line": 37,
+                "end_col": 24
+              }
+            }
+          },
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_da6c0a49",
+              "type": "import_reference",
+              "id": "c4747ccedde1b4dd6fcd25b9d02fc418",
+              "file": "app.py",
+              "line": 1,
+              "context": "import_dependency",
+              "code": "from fastapi import FastAPI, HTTPException, Request",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 1,
+                "start_col": 0,
+                "end_line": 1,
+                "end_col": 51
+              }
+            },
+            {
+              "name": "import_9f66e645",
+              "type": "import_reference",
+              "id": "c051ff350e5e2d6998085b10f00086e0",
+              "file": "app.py",
+              "line": 2,
+              "context": "import_dependency",
+              "code": "from fetcher import fetch_cve",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 2,
+                "start_col": 0,
+                "end_line": 2,
+                "end_col": 29
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "function",
+      "name": "analysis",
+      "code": "async def analysis(request: Request):\n    try:\n        results=res\n        return templates.TemplateResponse(\"analysis.html\", {\"request\": request, \"data\": results})\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))",
+      "start_line": 42,
+      "start_col": 0,
+      "end_line": 47,
+      "end_col": 59,
+      "file_path": "app.py",
+      "id": "bb40d961498651d35e5ad18fd8bd733d",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {
+            "res": {
+              "id": "f05ae714b638d34e5d4808a443ad7c2f",
+              "name": "res",
+              "type": "variable",
+              "file": "app.py",
+              "line": 16,
+              "context": "variable_reference",
+              "source_code": "res",
+              "code": "res=analyzer()",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 44,
+                "start_col": 16,
+                "end_line": 44,
+                "end_col": 19
+              }
+            },
+            "templates": {
+              "id": "1c6048a27ae3802cb07e355021452e38",
+              "name": "templates",
+              "type": "variable",
+              "file": "app.py",
+              "line": 27,
+              "context": "variable_reference",
+              "source_code": "templates",
+              "code": "templates = Jinja2Templates(directory=\"templates\")",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 45,
+                "start_col": 15,
+                "end_line": 45,
+                "end_col": 24
+              }
+            }
+          },
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_da6c0a49",
+              "type": "import_reference",
+              "id": "c4747ccedde1b4dd6fcd25b9d02fc418",
+              "file": "app.py",
+              "line": 1,
+              "context": "import_dependency",
+              "code": "from fastapi import FastAPI, HTTPException, Request",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 1,
+                "start_col": 0,
+                "end_line": 1,
+                "end_col": 51
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "function",
+      "name": "notify",
+      "code": "async def notify():\n    try:\n        results=res\n        msg=notifier_agent(results)\n        return {\"message\": msg}\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))",
+      "start_line": 50,
+      "start_col": 0,
+      "end_line": 56,
+      "end_col": 59,
+      "file_path": "app.py",
+      "id": "53a008924ced4f322300409b6fd96dd3",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {
+            "res": {
+              "id": "f05ae714b638d34e5d4808a443ad7c2f",
+              "name": "res",
+              "type": "variable",
+              "file": "app.py",
+              "line": 16,
+              "context": "variable_reference",
+              "source_code": "res",
+              "code": "res=analyzer()",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 52,
+                "start_col": 16,
+                "end_line": 52,
+                "end_col": 19
+              }
+            }
+          },
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_da6c0a49",
+              "type": "import_reference",
+              "id": "c4747ccedde1b4dd6fcd25b9d02fc418",
+              "file": "app.py",
+              "line": 1,
+              "context": "import_dependency",
+              "code": "from fastapi import FastAPI, HTTPException, Request",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 1,
+                "start_col": 0,
+                "end_line": 1,
+                "end_col": 51
+              }
+            },
+            {
+              "name": "import_d5091adc",
+              "type": "import_reference",
+              "id": "9f5a03d0517eb7bcfcf6ae1b964bc342",
+              "file": "app.py",
+              "line": 4,
+              "context": "import_dependency",
+              "code": "from notifier import notifier_agent",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 4,
+                "start_col": 0,
+                "end_line": 4,
+                "end_col": 35
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "function",
+      "name": "chat",
+      "code": "async def chat(request: ChatRequest):\n    query=request.query\n    results = query_vector_db(collection, query)\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \n               \"Content-Type\": \"application/json\"\n            }\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"User query: {query}\\n\"\n                    f\"Relevant CVE analysis data from ChromaDB: {results}\\n\"\n                    \"Provide a concise response to the user's query based on this data.\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        return {\"error\": f\"LLM failed: {response.status_code}\"}\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    return {\"response\": llm_output}",
+      "start_line": 59,
+      "start_col": 0,
+      "end_line": 85,
+      "end_col": 35,
+      "file_path": "app.py",
+      "id": "710acbc7a542b6ed4e71fb95a45d3947",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {
+            "ChatRequest": {
+              "id": "a47132f9d8c2f50a9caf28181d94f701",
+              "name": "ChatRequest",
+              "type": "class",
+              "file": "app.py",
+              "line": 24,
+              "context": "class_reference",
+              "source_code": "ChatRequest",
+              "code": "class ChatRequest(BaseModel):\n    query: str",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 59,
+                "start_col": 24,
+                "end_line": 59,
+                "end_col": 35
+              }
+            }
+          },
+          "variables": {
+            "ChatRequest": {
+              "id": "a47132f9d8c2f50a9caf28181d94f701",
+              "name": "ChatRequest",
+              "type": "variable",
+              "file": "app.py",
+              "line": 24,
+              "context": "variable_reference",
+              "source_code": "ChatRequest",
+              "code": "class ChatRequest(BaseModel):\n    query: str",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 59,
+                "start_col": 24,
+                "end_line": 59,
+                "end_col": 35
+              }
+            },
+            "query": {
+              "id": "06acc4a6aa66ac01f7b0fab242a548f4",
+              "name": "query",
+              "type": "variable",
+              "file": "app.py",
+              "line": 25,
+              "context": "variable_reference",
+              "source_code": "query",
+              "code": "query: str",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 60,
+                "start_col": 4,
+                "end_line": 60,
+                "end_col": 9
+              }
+            },
+            "collection": {
+              "id": "41863be62d43b04935710a989abb65af",
+              "name": "collection",
+              "type": "variable",
+              "file": "app.py",
+              "line": 17,
+              "context": "variable_reference",
+              "source_code": "collection",
+              "code": "collection = store_in_vector_db(res)",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 61,
+                "start_col": 30,
+                "end_line": 61,
+                "end_col": 40
+              }
+            },
+            "api_key": {
+              "id": "3c7690b9663185b38fbf855c6fb6b4d8",
+              "name": "api_key",
+              "type": "variable",
+              "file": "app.py",
+              "line": 14,
+              "context": "variable_reference",
+              "source_code": "api_key",
+              "code": "api_key=os.getenv(\"OPENAIROUTER_key\")",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 63,
+                "start_col": 42,
+                "end_line": 63,
+                "end_col": 49
+              }
+            },
+            "model": {
+              "id": "075dacdf8723934a0b612f3f6c1533a8",
+              "name": "model",
+              "type": "variable",
+              "file": "app.py",
+              "line": 13,
+              "context": "variable_reference",
+              "source_code": "model",
+              "code": "model=os.getenv(\"OPEN_MODEL\")",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 67,
+                "start_col": 17,
+                "end_line": 67,
+                "end_col": 22
+              }
+            }
+          },
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_da6c0a49",
+              "type": "import_reference",
+              "id": "c4747ccedde1b4dd6fcd25b9d02fc418",
+              "file": "app.py",
+              "line": 1,
+              "context": "import_dependency",
+              "code": "from fastapi import FastAPI, HTTPException, Request",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 1,
+                "start_col": 0,
+                "end_line": 1,
+                "end_col": 51
+              }
+            },
+            {
+              "name": "import_dbbac710",
+              "type": "import_reference",
+              "id": "80b4ae26e1258af0ec6dcacc1861ab0f",
+              "file": "app.py",
+              "line": 5,
+              "context": "import_dependency",
+              "code": "from vector import store_in_vector_db, query_vector_db",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 5,
+                "start_col": 0,
+                "end_line": 5,
+                "end_col": 54
+              }
+            },
+            {
+              "name": "import_8e41e132",
+              "type": "import_reference",
+              "id": "b85d57b92fff7f7c7af757f2ad4cae65",
+              "file": "app.py",
+              "line": 7,
+              "context": "import_dependency",
+              "code": "import requests",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 7,
+                "start_col": 0,
+                "end_line": 7,
+                "end_col": 15
+              }
+            },
+            {
+              "name": "import_ed9f4b8f",
+              "type": "import_reference",
+              "id": "08b858b586f3e38288fd0cc6d8f2d6e9",
+              "file": "app.py",
+              "line": 8,
+              "context": "import_dependency",
+              "code": "import os",
+              "source_location": {
+                "file": "app.py",
+                "start_line": 8,
+                "start_col": 0,
+                "end_line": 8,
+                "end_col": 9
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_8e41e132",
+      "code": "import requests",
+      "start_line": 1,
+      "start_col": 0,
+      "end_line": 1,
+      "end_col": 15,
+      "file_path": "analyzer.py",
+      "id": "db6c0a1cf5edf41a67299576d12dfeb5",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "9c878d3ea038836c4a385162e3a42f0a",
+            "name": "analyzer",
+            "type": "function",
+            "file": "analyzer.py",
+            "line": 13,
+            "context": "referenced_by",
+            "code": "def analyzer():\n    url=\"https://openrouter.ai/api/v1/chat/completions\"\n    headers={\n        \"Authorization\": f\"Bearer {api_key}\",\n        \"Content-Type\": \"application/json\"\n    }\n    str=\"\\n\".join([f\"CVE ID: {item['CVE_ID']}, Description: {item['Description']}, Published Date: {item['Published_Date']} Last modified: {item['Last_Modified']}, Status:{item['Status']}\" for item in res])\n    data={\n        \"model\": model,\n        \"temperature\": 0.1,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": f\"Analyze the following vulnerability data: {str}. For each vulnerability, provide a brief risk assessment. Then, format the output as a nested JSON object where the top-level keys are risk categories (Critical, Moderate, Low) and under each category, map each CVE ID to its risk assessment and action to be taken.\"\n\n            }\n        ],\n    }\n    response=requests.post(url, headers=headers, json=data)\n    if response.status_code!=200:\n        raise Exception(f\"Failed to load page {response.status_code}\")\n    raw_output = response.json()[\"choices\"][0][\"message\"][\"content\"]\n    cleaned_output = re.sub(r\"```json\\n|```\", \"\", raw_output).strip() \n\n    try:\n        return json.loads(cleaned_output) \n    except json.JSONDecodeError:\n        raise Exception(\"Failed to parse LLM output as JSON\")",
+            "source_location": {
+              "file": "analyzer.py",
+              "start_line": 13,
+              "start_col": 0,
+              "end_line": 40,
+              "end_col": 61
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_a019f79b",
+      "code": "from dotenv import load_dotenv",
+      "start_line": 2,
+      "start_col": 0,
+      "end_line": 2,
+      "end_col": 30,
+      "file_path": "analyzer.py",
+      "id": "fa6bbfb141174c57e26b2cb194ae9126",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_ed9f4b8f",
+      "code": "import os",
+      "start_line": 3,
+      "start_col": 0,
+      "end_line": 3,
+      "end_col": 9,
+      "file_path": "analyzer.py",
+      "id": "60a160b3c574a74bc8f8ede5f2612dd8",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "979f44a7142c786c1a0bb44b29675a86",
+            "name": "api_key",
+            "type": "variable_definition",
+            "file": "analyzer.py",
+            "line": 9,
+            "context": "referenced_by",
+            "code": "api_key=os.getenv(\"OPENAIROUTER_key\")",
+            "source_location": {
+              "file": "analyzer.py",
+              "start_line": 9,
+              "start_col": 0,
+              "end_line": 9,
+              "end_col": 37
+            }
+          },
+          {
+            "id": "f15b43654785d859e6ac614582af3847",
+            "name": "model",
+            "type": "variable_definition",
+            "file": "analyzer.py",
+            "line": 10,
+            "context": "referenced_by",
+            "code": "model=os.getenv(\"OPEN_MODEL\")",
+            "source_location": {
+              "file": "analyzer.py",
+              "start_line": 10,
+              "start_col": 0,
+              "end_line": 10,
+              "end_col": 29
+            }
+          },
+          {
+            "id": "9c878d3ea038836c4a385162e3a42f0a",
+            "name": "analyzer",
+            "type": "function",
+            "file": "analyzer.py",
+            "line": 13,
+            "context": "referenced_by",
+            "code": "def analyzer():\n    url=\"https://openrouter.ai/api/v1/chat/completions\"\n    headers={\n        \"Authorization\": f\"Bearer {api_key}\",\n        \"Content-Type\": \"application/json\"\n    }\n    str=\"\\n\".join([f\"CVE ID: {item['CVE_ID']}, Description: {item['Description']}, Published Date: {item['Published_Date']} Last modified: {item['Last_Modified']}, Status:{item['Status']}\" for item in res])\n    data={\n        \"model\": model,\n        \"temperature\": 0.1,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": f\"Analyze the following vulnerability data: {str}. For each vulnerability, provide a brief risk assessment. Then, format the output as a nested JSON object where the top-level keys are risk categories (Critical, Moderate, Low) and under each category, map each CVE ID to its risk assessment and action to be taken.\"\n\n            }\n        ],\n    }\n    response=requests.post(url, headers=headers, json=data)\n    if response.status_code!=200:\n        raise Exception(f\"Failed to load page {response.status_code}\")\n    raw_output = response.json()[\"choices\"][0][\"message\"][\"content\"]\n    cleaned_output = re.sub(r\"```json\\n|```\", \"\", raw_output).strip() \n\n    try:\n        return json.loads(cleaned_output) \n    except json.JSONDecodeError:\n        raise Exception(\"Failed to parse LLM output as JSON\")",
+            "source_location": {
+              "file": "analyzer.py",
+              "start_line": 13,
+              "start_col": 0,
+              "end_line": 40,
+              "end_col": 61
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_9f66e645",
+      "code": "from fetcher import fetch_cve",
+      "start_line": 4,
+      "start_col": 0,
+      "end_line": 4,
+      "end_col": 29,
+      "file_path": "analyzer.py",
+      "id": "cf825af18ab23f15306c6f0bd6743f29",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "5125614776024b36d1cf9d63899553ec",
+            "name": "res",
+            "type": "variable_definition",
+            "file": "analyzer.py",
+            "line": 11,
+            "context": "referenced_by",
+            "code": "res=fetch_cve()",
+            "source_location": {
+              "file": "analyzer.py",
+              "start_line": 11,
+              "start_col": 0,
+              "end_line": 11,
+              "end_col": 15
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_39a4e57a",
+      "code": "import json",
+      "start_line": 5,
+      "start_col": 0,
+      "end_line": 5,
+      "end_col": 11,
+      "file_path": "analyzer.py",
+      "id": "ae787bc92bf6e28adc8efbe5a59e5322",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "9c878d3ea038836c4a385162e3a42f0a",
+            "name": "analyzer",
+            "type": "function",
+            "file": "analyzer.py",
+            "line": 13,
+            "context": "referenced_by",
+            "code": "def analyzer():\n    url=\"https://openrouter.ai/api/v1/chat/completions\"\n    headers={\n        \"Authorization\": f\"Bearer {api_key}\",\n        \"Content-Type\": \"application/json\"\n    }\n    str=\"\\n\".join([f\"CVE ID: {item['CVE_ID']}, Description: {item['Description']}, Published Date: {item['Published_Date']} Last modified: {item['Last_Modified']}, Status:{item['Status']}\" for item in res])\n    data={\n        \"model\": model,\n        \"temperature\": 0.1,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": f\"Analyze the following vulnerability data: {str}. For each vulnerability, provide a brief risk assessment. Then, format the output as a nested JSON object where the top-level keys are risk categories (Critical, Moderate, Low) and under each category, map each CVE ID to its risk assessment and action to be taken.\"\n\n            }\n        ],\n    }\n    response=requests.post(url, headers=headers, json=data)\n    if response.status_code!=200:\n        raise Exception(f\"Failed to load page {response.status_code}\")\n    raw_output = response.json()[\"choices\"][0][\"message\"][\"content\"]\n    cleaned_output = re.sub(r\"```json\\n|```\", \"\", raw_output).strip() \n\n    try:\n        return json.loads(cleaned_output) \n    except json.JSONDecodeError:\n        raise Exception(\"Failed to parse LLM output as JSON\")",
+            "source_location": {
+              "file": "analyzer.py",
+              "start_line": 13,
+              "start_col": 0,
+              "end_line": 40,
+              "end_col": 61
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_a7b84d63",
+      "code": "import re",
+      "start_line": 6,
+      "start_col": 0,
+      "end_line": 6,
+      "end_col": 9,
+      "file_path": "analyzer.py",
+      "id": "1016e7057816ad4c8c8a4eed9da8edcc",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "5125614776024b36d1cf9d63899553ec",
+            "name": "res",
+            "type": "variable_definition",
+            "file": "analyzer.py",
+            "line": 11,
+            "context": "referenced_by",
+            "code": "res=fetch_cve()",
+            "source_location": {
+              "file": "analyzer.py",
+              "start_line": 11,
+              "start_col": 0,
+              "end_line": 11,
+              "end_col": 15
+            }
+          },
+          {
+            "id": "9c878d3ea038836c4a385162e3a42f0a",
+            "name": "analyzer",
+            "type": "function",
+            "file": "analyzer.py",
+            "line": 13,
+            "context": "referenced_by",
+            "code": "def analyzer():\n    url=\"https://openrouter.ai/api/v1/chat/completions\"\n    headers={\n        \"Authorization\": f\"Bearer {api_key}\",\n        \"Content-Type\": \"application/json\"\n    }\n    str=\"\\n\".join([f\"CVE ID: {item['CVE_ID']}, Description: {item['Description']}, Published Date: {item['Published_Date']} Last modified: {item['Last_Modified']}, Status:{item['Status']}\" for item in res])\n    data={\n        \"model\": model,\n        \"temperature\": 0.1,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": f\"Analyze the following vulnerability data: {str}. For each vulnerability, provide a brief risk assessment. Then, format the output as a nested JSON object where the top-level keys are risk categories (Critical, Moderate, Low) and under each category, map each CVE ID to its risk assessment and action to be taken.\"\n\n            }\n        ],\n    }\n    response=requests.post(url, headers=headers, json=data)\n    if response.status_code!=200:\n        raise Exception(f\"Failed to load page {response.status_code}\")\n    raw_output = response.json()[\"choices\"][0][\"message\"][\"content\"]\n    cleaned_output = re.sub(r\"```json\\n|```\", \"\", raw_output).strip() \n\n    try:\n        return json.loads(cleaned_output) \n    except json.JSONDecodeError:\n        raise Exception(\"Failed to parse LLM output as JSON\")",
+            "source_location": {
+              "file": "analyzer.py",
+              "start_line": 13,
+              "start_col": 0,
+              "end_line": 40,
+              "end_col": 61
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "api_key",
+      "code": "api_key=os.getenv(\"OPENAIROUTER_key\")",
+      "start_line": 9,
+      "start_col": 0,
+      "end_line": 9,
+      "end_col": 37,
+      "file_path": "analyzer.py",
+      "id": "979f44a7142c786c1a0bb44b29675a86",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_ed9f4b8f",
+              "type": "import_reference",
+              "id": "60a160b3c574a74bc8f8ede5f2612dd8",
+              "file": "analyzer.py",
+              "line": 3,
+              "context": "import_dependency",
+              "code": "import os",
+              "source_location": {
+                "file": "analyzer.py",
+                "start_line": 3,
+                "start_col": 0,
+                "end_line": 3,
+                "end_col": 9
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "analyzer": {
+            "id": "9c878d3ea038836c4a385162e3a42f0a",
+            "name": "analyzer",
+            "type": "function",
+            "file": "analyzer.py",
+            "line": 13,
+            "context": "referenced_by_variable",
+            "code": "def analyzer():\n    url=\"https://openrouter.ai/api/v1/chat/completions\"\n    headers={\n        \"Authorization\": f\"Bearer {api_key}\",\n        \"Content-Type\": \"application/json\"\n    }\n    str=\"\\n\".join([f\"CVE ID: {item['CVE_ID']}, Description: {item['Description']}, Published Date: {item['Published_Date']} Last modified: {item['Last_Modified']}, Status:{item['Status']}\" for item in res])\n    data={\n        \"model\": model,\n        \"temperature\": 0.1,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": f\"Analyze the following vulnerability data: {str}. For each vulnerability, provide a brief risk assessment. Then, format the output as a nested JSON object where the top-level keys are risk categories (Critical, Moderate, Low) and under each category, map each CVE ID to its risk assessment and action to be taken.\"\n\n            }\n        ],\n    }\n    response=requests.post(url, headers=headers, json=data)\n    if response.status_code!=200:\n        raise Exception(f\"Failed to load page {response.status_code}\")\n    raw_output = response.json()[\"choices\"][0][\"message\"][\"content\"]\n    cleaned_output = re.sub(r\"```json\\n|```\", \"\", raw_output).strip() \n\n    try:\n        return json.loads(cleaned_output) \n    except json.JSONDecodeError:\n        raise Exception(\"Failed to parse LLM output as JSON\")",
+            "source_location": {
+              "file": "analyzer.py",
+              "start_line": 13,
+              "start_col": 0,
+              "end_line": 40,
+              "end_col": 61
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "model",
+      "code": "model=os.getenv(\"OPEN_MODEL\")",
+      "start_line": 10,
+      "start_col": 0,
+      "end_line": 10,
+      "end_col": 29,
+      "file_path": "analyzer.py",
+      "id": "f15b43654785d859e6ac614582af3847",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_ed9f4b8f",
+              "type": "import_reference",
+              "id": "60a160b3c574a74bc8f8ede5f2612dd8",
+              "file": "analyzer.py",
+              "line": 3,
+              "context": "import_dependency",
+              "code": "import os",
+              "source_location": {
+                "file": "analyzer.py",
+                "start_line": 3,
+                "start_col": 0,
+                "end_line": 3,
+                "end_col": 9
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "analyzer": {
+            "id": "9c878d3ea038836c4a385162e3a42f0a",
+            "name": "analyzer",
+            "type": "function",
+            "file": "analyzer.py",
+            "line": 13,
+            "context": "referenced_by_variable",
+            "code": "def analyzer():\n    url=\"https://openrouter.ai/api/v1/chat/completions\"\n    headers={\n        \"Authorization\": f\"Bearer {api_key}\",\n        \"Content-Type\": \"application/json\"\n    }\n    str=\"\\n\".join([f\"CVE ID: {item['CVE_ID']}, Description: {item['Description']}, Published Date: {item['Published_Date']} Last modified: {item['Last_Modified']}, Status:{item['Status']}\" for item in res])\n    data={\n        \"model\": model,\n        \"temperature\": 0.1,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": f\"Analyze the following vulnerability data: {str}. For each vulnerability, provide a brief risk assessment. Then, format the output as a nested JSON object where the top-level keys are risk categories (Critical, Moderate, Low) and under each category, map each CVE ID to its risk assessment and action to be taken.\"\n\n            }\n        ],\n    }\n    response=requests.post(url, headers=headers, json=data)\n    if response.status_code!=200:\n        raise Exception(f\"Failed to load page {response.status_code}\")\n    raw_output = response.json()[\"choices\"][0][\"message\"][\"content\"]\n    cleaned_output = re.sub(r\"```json\\n|```\", \"\", raw_output).strip() \n\n    try:\n        return json.loads(cleaned_output) \n    except json.JSONDecodeError:\n        raise Exception(\"Failed to parse LLM output as JSON\")",
+            "source_location": {
+              "file": "analyzer.py",
+              "start_line": 13,
+              "start_col": 0,
+              "end_line": 40,
+              "end_col": 61
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "res",
+      "code": "res=fetch_cve()",
+      "start_line": 11,
+      "start_col": 0,
+      "end_line": 11,
+      "end_col": 15,
+      "file_path": "analyzer.py",
+      "id": "5125614776024b36d1cf9d63899553ec",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_9f66e645",
+              "type": "import_reference",
+              "id": "cf825af18ab23f15306c6f0bd6743f29",
+              "file": "analyzer.py",
+              "line": 4,
+              "context": "import_dependency",
+              "code": "from fetcher import fetch_cve",
+              "source_location": {
+                "file": "analyzer.py",
+                "start_line": 4,
+                "start_col": 0,
+                "end_line": 4,
+                "end_col": 29
+              }
+            },
+            {
+              "name": "import_a7b84d63",
+              "type": "import_reference",
+              "id": "1016e7057816ad4c8c8a4eed9da8edcc",
+              "file": "analyzer.py",
+              "line": 6,
+              "context": "import_dependency",
+              "code": "import re",
+              "source_location": {
+                "file": "analyzer.py",
+                "start_line": 6,
+                "start_col": 0,
+                "end_line": 6,
+                "end_col": 9
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "analyzer": {
+            "id": "9c878d3ea038836c4a385162e3a42f0a",
+            "name": "analyzer",
+            "type": "function",
+            "file": "analyzer.py",
+            "line": 13,
+            "context": "referenced_by_variable",
+            "code": "def analyzer():\n    url=\"https://openrouter.ai/api/v1/chat/completions\"\n    headers={\n        \"Authorization\": f\"Bearer {api_key}\",\n        \"Content-Type\": \"application/json\"\n    }\n    str=\"\\n\".join([f\"CVE ID: {item['CVE_ID']}, Description: {item['Description']}, Published Date: {item['Published_Date']} Last modified: {item['Last_Modified']}, Status:{item['Status']}\" for item in res])\n    data={\n        \"model\": model,\n        \"temperature\": 0.1,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": f\"Analyze the following vulnerability data: {str}. For each vulnerability, provide a brief risk assessment. Then, format the output as a nested JSON object where the top-level keys are risk categories (Critical, Moderate, Low) and under each category, map each CVE ID to its risk assessment and action to be taken.\"\n\n            }\n        ],\n    }\n    response=requests.post(url, headers=headers, json=data)\n    if response.status_code!=200:\n        raise Exception(f\"Failed to load page {response.status_code}\")\n    raw_output = response.json()[\"choices\"][0][\"message\"][\"content\"]\n    cleaned_output = re.sub(r\"```json\\n|```\", \"\", raw_output).strip() \n\n    try:\n        return json.loads(cleaned_output) \n    except json.JSONDecodeError:\n        raise Exception(\"Failed to parse LLM output as JSON\")",
+            "source_location": {
+              "file": "analyzer.py",
+              "start_line": 13,
+              "start_col": 0,
+              "end_line": 40,
+              "end_col": 61
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "function",
+      "name": "analyzer",
+      "code": "def analyzer():\n    url=\"https://openrouter.ai/api/v1/chat/completions\"\n    headers={\n        \"Authorization\": f\"Bearer {api_key}\",\n        \"Content-Type\": \"application/json\"\n    }\n    str=\"\\n\".join([f\"CVE ID: {item['CVE_ID']}, Description: {item['Description']}, Published Date: {item['Published_Date']} Last modified: {item['Last_Modified']}, Status:{item['Status']}\" for item in res])\n    data={\n        \"model\": model,\n        \"temperature\": 0.1,\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": f\"Analyze the following vulnerability data: {str}. For each vulnerability, provide a brief risk assessment. Then, format the output as a nested JSON object where the top-level keys are risk categories (Critical, Moderate, Low) and under each category, map each CVE ID to its risk assessment and action to be taken.\"\n\n            }\n        ],\n    }\n    response=requests.post(url, headers=headers, json=data)\n    if response.status_code!=200:\n        raise Exception(f\"Failed to load page {response.status_code}\")\n    raw_output = response.json()[\"choices\"][0][\"message\"][\"content\"]\n    cleaned_output = re.sub(r\"```json\\n|```\", \"\", raw_output).strip() \n\n    try:\n        return json.loads(cleaned_output) \n    except json.JSONDecodeError:\n        raise Exception(\"Failed to parse LLM output as JSON\")",
+      "start_line": 13,
+      "start_col": 0,
+      "end_line": 40,
+      "end_col": 61,
+      "file_path": "analyzer.py",
+      "id": "9c878d3ea038836c4a385162e3a42f0a",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {
+            "api_key": {
+              "id": "979f44a7142c786c1a0bb44b29675a86",
+              "name": "api_key",
+              "type": "variable",
+              "file": "analyzer.py",
+              "line": 9,
+              "context": "variable_reference",
+              "source_code": "api_key",
+              "code": "api_key=os.getenv(\"OPENAIROUTER_key\")",
+              "source_location": {
+                "file": "analyzer.py",
+                "start_line": 16,
+                "start_col": 35,
+                "end_line": 16,
+                "end_col": 42
+              }
+            },
+            "res": {
+              "id": "5125614776024b36d1cf9d63899553ec",
+              "name": "res",
+              "type": "variable",
+              "file": "analyzer.py",
+              "line": 11,
+              "context": "variable_reference",
+              "source_code": "res",
+              "code": "res=fetch_cve()",
+              "source_location": {
+                "file": "analyzer.py",
+                "start_line": 19,
+                "start_col": 201,
+                "end_line": 19,
+                "end_col": 204
+              }
+            },
+            "model": {
+              "id": "f15b43654785d859e6ac614582af3847",
+              "name": "model",
+              "type": "variable",
+              "file": "analyzer.py",
+              "line": 10,
+              "context": "variable_reference",
+              "source_code": "model",
+              "code": "model=os.getenv(\"OPEN_MODEL\")",
+              "source_location": {
+                "file": "analyzer.py",
+                "start_line": 21,
+                "start_col": 17,
+                "end_line": 21,
+                "end_col": 22
+              }
+            }
+          },
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_8e41e132",
+              "type": "import_reference",
+              "id": "db6c0a1cf5edf41a67299576d12dfeb5",
+              "file": "analyzer.py",
+              "line": 1,
+              "context": "import_dependency",
+              "code": "import requests",
+              "source_location": {
+                "file": "analyzer.py",
+                "start_line": 1,
+                "start_col": 0,
+                "end_line": 1,
+                "end_col": 15
+              }
+            },
+            {
+              "name": "import_ed9f4b8f",
+              "type": "import_reference",
+              "id": "60a160b3c574a74bc8f8ede5f2612dd8",
+              "file": "analyzer.py",
+              "line": 3,
+              "context": "import_dependency",
+              "code": "import os",
+              "source_location": {
+                "file": "analyzer.py",
+                "start_line": 3,
+                "start_col": 0,
+                "end_line": 3,
+                "end_col": 9
+              }
+            },
+            {
+              "name": "import_39a4e57a",
+              "type": "import_reference",
+              "id": "ae787bc92bf6e28adc8efbe5a59e5322",
+              "file": "analyzer.py",
+              "line": 5,
+              "context": "import_dependency",
+              "code": "import json",
+              "source_location": {
+                "file": "analyzer.py",
+                "start_line": 5,
+                "start_col": 0,
+                "end_line": 5,
+                "end_col": 11
+              }
+            },
+            {
+              "name": "import_a7b84d63",
+              "type": "import_reference",
+              "id": "1016e7057816ad4c8c8a4eed9da8edcc",
+              "file": "analyzer.py",
+              "line": 6,
+              "context": "import_dependency",
+              "code": "import re",
+              "source_location": {
+                "file": "analyzer.py",
+                "start_line": 6,
+                "start_col": 0,
+                "end_line": 6,
+                "end_col": 9
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_161ccf22",
+      "code": "import smtplib",
+      "start_line": 1,
+      "start_col": 0,
+      "end_line": 1,
+      "end_col": 14,
+      "file_path": "notifier.py",
+      "id": "2345ee96106003c3d14ad363c452b519",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "e34caf21e56a89cfa6d14ff45c951671",
+            "name": "send_notification",
+            "type": "function",
+            "file": "notifier.py",
+            "line": 17,
+            "context": "referenced_by",
+            "code": "def send_notification(subject, body):\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \"Content-Type\": \"application/json\"}\n    raw_data = f\"Subject: {subject}\\nBody: {body}\"\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3, \n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"Generate a concise email subject and body for a critical CVE alert based on this data: {raw_data}. \"\n                    f\"Return exactly this format: 'Subject: Critical CVE Alert: CVE ID - <brief risk>'\\n'Body: <3-sentence summary including CVE ID, risk, and action>'\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        raise Exception(f\"LLM failed: {response.status_code}\")\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    sub, bod = llm_output.split(\"\\nBody: \", 1)\n    sub = sub.replace(\"Subject: \", \"\")\n    msg = MIMEText(bod)\n    msg[\"Subject\"] = sub\n    msg[\"From\"] = SENDER_EMAIL\n    msg[\"To\"] = \", \".join(RECIPIENTS)\n    try:\n        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:\n            server.starttls()\n            server.login(SENDER_EMAIL, SENDER_PASSWORD)\n            server.send_message(msg)\n    except Exception as e:\n        return f\"Failed to send notification: {e}\"",
+            "source_location": {
+              "file": "notifier.py",
+              "start_line": 17,
+              "start_col": 0,
+              "end_line": 51,
+              "end_col": 50
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_eddcc439",
+      "code": "from email.mime.text import MIMEText",
+      "start_line": 2,
+      "start_col": 0,
+      "end_line": 2,
+      "end_col": 36,
+      "file_path": "notifier.py",
+      "id": "3843773a3b99d014af7b2734743671f6",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "e34caf21e56a89cfa6d14ff45c951671",
+            "name": "send_notification",
+            "type": "function",
+            "file": "notifier.py",
+            "line": 17,
+            "context": "referenced_by",
+            "code": "def send_notification(subject, body):\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \"Content-Type\": \"application/json\"}\n    raw_data = f\"Subject: {subject}\\nBody: {body}\"\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3, \n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"Generate a concise email subject and body for a critical CVE alert based on this data: {raw_data}. \"\n                    f\"Return exactly this format: 'Subject: Critical CVE Alert: CVE ID - <brief risk>'\\n'Body: <3-sentence summary including CVE ID, risk, and action>'\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        raise Exception(f\"LLM failed: {response.status_code}\")\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    sub, bod = llm_output.split(\"\\nBody: \", 1)\n    sub = sub.replace(\"Subject: \", \"\")\n    msg = MIMEText(bod)\n    msg[\"Subject\"] = sub\n    msg[\"From\"] = SENDER_EMAIL\n    msg[\"To\"] = \", \".join(RECIPIENTS)\n    try:\n        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:\n            server.starttls()\n            server.login(SENDER_EMAIL, SENDER_PASSWORD)\n            server.send_message(msg)\n    except Exception as e:\n        return f\"Failed to send notification: {e}\"",
+            "source_location": {
+              "file": "notifier.py",
+              "start_line": 17,
+              "start_col": 0,
+              "end_line": 51,
+              "end_col": 50
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_a019f79b",
+      "code": "from dotenv import load_dotenv",
+      "start_line": 3,
+      "start_col": 0,
+      "end_line": 3,
+      "end_col": 30,
+      "file_path": "notifier.py",
+      "id": "732360c0e4213659ffbdb038cbf52901",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_ed9f4b8f",
+      "code": "import os",
+      "start_line": 4,
+      "start_col": 0,
+      "end_line": 4,
+      "end_col": 9,
+      "file_path": "notifier.py",
+      "id": "b4c3d28e296393b59b49b455f0fd03d3",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "9540efed70054d086f0d1bc014a33dea",
+            "name": "SENDER_PASSWORD",
+            "type": "variable_definition",
+            "file": "notifier.py",
+            "line": 12,
+            "context": "referenced_by",
+            "code": "SENDER_PASSWORD = os.getenv(\"APP_PASSWORD\")",
+            "source_location": {
+              "file": "notifier.py",
+              "start_line": 12,
+              "start_col": 0,
+              "end_line": 12,
+              "end_col": 43
+            }
+          },
+          {
+            "id": "64417c3a66f117c11ff16f5b60cd655a",
+            "name": "api_key",
+            "type": "variable_definition",
+            "file": "notifier.py",
+            "line": 14,
+            "context": "referenced_by",
+            "code": "api_key = os.getenv(\"OPENAIROUTER_key\")",
+            "source_location": {
+              "file": "notifier.py",
+              "start_line": 14,
+              "start_col": 0,
+              "end_line": 14,
+              "end_col": 39
+            }
+          },
+          {
+            "id": "736e01b1ea4617ac7b3324b3606ade99",
+            "name": "model",
+            "type": "variable_definition",
+            "file": "notifier.py",
+            "line": 15,
+            "context": "referenced_by",
+            "code": "model = os.getenv(\"OPEN_MODEL\")",
+            "source_location": {
+              "file": "notifier.py",
+              "start_line": 15,
+              "start_col": 0,
+              "end_line": 15,
+              "end_col": 31
+            }
+          },
+          {
+            "id": "e34caf21e56a89cfa6d14ff45c951671",
+            "name": "send_notification",
+            "type": "function",
+            "file": "notifier.py",
+            "line": 17,
+            "context": "referenced_by",
+            "code": "def send_notification(subject, body):\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \"Content-Type\": \"application/json\"}\n    raw_data = f\"Subject: {subject}\\nBody: {body}\"\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3, \n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"Generate a concise email subject and body for a critical CVE alert based on this data: {raw_data}. \"\n                    f\"Return exactly this format: 'Subject: Critical CVE Alert: CVE ID - <brief risk>'\\n'Body: <3-sentence summary including CVE ID, risk, and action>'\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        raise Exception(f\"LLM failed: {response.status_code}\")\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    sub, bod = llm_output.split(\"\\nBody: \", 1)\n    sub = sub.replace(\"Subject: \", \"\")\n    msg = MIMEText(bod)\n    msg[\"Subject\"] = sub\n    msg[\"From\"] = SENDER_EMAIL\n    msg[\"To\"] = \", \".join(RECIPIENTS)\n    try:\n        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:\n            server.starttls()\n            server.login(SENDER_EMAIL, SENDER_PASSWORD)\n            server.send_message(msg)\n    except Exception as e:\n        return f\"Failed to send notification: {e}\"",
+            "source_location": {
+              "file": "notifier.py",
+              "start_line": 17,
+              "start_col": 0,
+              "end_line": 51,
+              "end_col": 50
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_8e41e132",
+      "code": "import requests",
+      "start_line": 5,
+      "start_col": 0,
+      "end_line": 5,
+      "end_col": 15,
+      "file_path": "notifier.py",
+      "id": "4a1cf938a1fe43f2ee147263a779d8c8",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "e34caf21e56a89cfa6d14ff45c951671",
+            "name": "send_notification",
+            "type": "function",
+            "file": "notifier.py",
+            "line": 17,
+            "context": "referenced_by",
+            "code": "def send_notification(subject, body):\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \"Content-Type\": \"application/json\"}\n    raw_data = f\"Subject: {subject}\\nBody: {body}\"\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3, \n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"Generate a concise email subject and body for a critical CVE alert based on this data: {raw_data}. \"\n                    f\"Return exactly this format: 'Subject: Critical CVE Alert: CVE ID - <brief risk>'\\n'Body: <3-sentence summary including CVE ID, risk, and action>'\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        raise Exception(f\"LLM failed: {response.status_code}\")\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    sub, bod = llm_output.split(\"\\nBody: \", 1)\n    sub = sub.replace(\"Subject: \", \"\")\n    msg = MIMEText(bod)\n    msg[\"Subject\"] = sub\n    msg[\"From\"] = SENDER_EMAIL\n    msg[\"To\"] = \", \".join(RECIPIENTS)\n    try:\n        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:\n            server.starttls()\n            server.login(SENDER_EMAIL, SENDER_PASSWORD)\n            server.send_message(msg)\n    except Exception as e:\n        return f\"Failed to send notification: {e}\"",
+            "source_location": {
+              "file": "notifier.py",
+              "start_line": 17,
+              "start_col": 0,
+              "end_line": 51,
+              "end_col": 50
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "SMTP_SERVER",
+      "code": "SMTP_SERVER = \"smtp.gmail.com\"",
+      "start_line": 9,
+      "start_col": 0,
+      "end_line": 9,
+      "end_col": 30,
+      "file_path": "notifier.py",
+      "id": "c2767e49a9cbf2dd707b6a20fe054c7b",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "send_notification": {
+            "id": "e34caf21e56a89cfa6d14ff45c951671",
+            "name": "send_notification",
+            "type": "function",
+            "file": "notifier.py",
+            "line": 17,
+            "context": "referenced_by_variable",
+            "code": "def send_notification(subject, body):\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \"Content-Type\": \"application/json\"}\n    raw_data = f\"Subject: {subject}\\nBody: {body}\"\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3, \n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"Generate a concise email subject and body for a critical CVE alert based on this data: {raw_data}. \"\n                    f\"Return exactly this format: 'Subject: Critical CVE Alert: CVE ID - <brief risk>'\\n'Body: <3-sentence summary including CVE ID, risk, and action>'\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        raise Exception(f\"LLM failed: {response.status_code}\")\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    sub, bod = llm_output.split(\"\\nBody: \", 1)\n    sub = sub.replace(\"Subject: \", \"\")\n    msg = MIMEText(bod)\n    msg[\"Subject\"] = sub\n    msg[\"From\"] = SENDER_EMAIL\n    msg[\"To\"] = \", \".join(RECIPIENTS)\n    try:\n        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:\n            server.starttls()\n            server.login(SENDER_EMAIL, SENDER_PASSWORD)\n            server.send_message(msg)\n    except Exception as e:\n        return f\"Failed to send notification: {e}\"",
+            "source_location": {
+              "file": "notifier.py",
+              "start_line": 17,
+              "start_col": 0,
+              "end_line": 51,
+              "end_col": 50
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "SMTP_PORT",
+      "code": "SMTP_PORT = 587",
+      "start_line": 10,
+      "start_col": 0,
+      "end_line": 10,
+      "end_col": 15,
+      "file_path": "notifier.py",
+      "id": "ea467cd5362f8ce92319cd755ed19a13",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "send_notification": {
+            "id": "e34caf21e56a89cfa6d14ff45c951671",
+            "name": "send_notification",
+            "type": "function",
+            "file": "notifier.py",
+            "line": 17,
+            "context": "referenced_by_variable",
+            "code": "def send_notification(subject, body):\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \"Content-Type\": \"application/json\"}\n    raw_data = f\"Subject: {subject}\\nBody: {body}\"\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3, \n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"Generate a concise email subject and body for a critical CVE alert based on this data: {raw_data}. \"\n                    f\"Return exactly this format: 'Subject: Critical CVE Alert: CVE ID - <brief risk>'\\n'Body: <3-sentence summary including CVE ID, risk, and action>'\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        raise Exception(f\"LLM failed: {response.status_code}\")\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    sub, bod = llm_output.split(\"\\nBody: \", 1)\n    sub = sub.replace(\"Subject: \", \"\")\n    msg = MIMEText(bod)\n    msg[\"Subject\"] = sub\n    msg[\"From\"] = SENDER_EMAIL\n    msg[\"To\"] = \", \".join(RECIPIENTS)\n    try:\n        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:\n            server.starttls()\n            server.login(SENDER_EMAIL, SENDER_PASSWORD)\n            server.send_message(msg)\n    except Exception as e:\n        return f\"Failed to send notification: {e}\"",
+            "source_location": {
+              "file": "notifier.py",
+              "start_line": 17,
+              "start_col": 0,
+              "end_line": 51,
+              "end_col": 50
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "SENDER_EMAIL",
+      "code": "SENDER_EMAIL = \"nvps742@gmail.com\"",
+      "start_line": 11,
+      "start_col": 0,
+      "end_line": 11,
+      "end_col": 34,
+      "file_path": "notifier.py",
+      "id": "924cafc86130729c22aea6eccf9832f3",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "send_notification": {
+            "id": "e34caf21e56a89cfa6d14ff45c951671",
+            "name": "send_notification",
+            "type": "function",
+            "file": "notifier.py",
+            "line": 17,
+            "context": "referenced_by_variable",
+            "code": "def send_notification(subject, body):\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \"Content-Type\": \"application/json\"}\n    raw_data = f\"Subject: {subject}\\nBody: {body}\"\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3, \n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"Generate a concise email subject and body for a critical CVE alert based on this data: {raw_data}. \"\n                    f\"Return exactly this format: 'Subject: Critical CVE Alert: CVE ID - <brief risk>'\\n'Body: <3-sentence summary including CVE ID, risk, and action>'\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        raise Exception(f\"LLM failed: {response.status_code}\")\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    sub, bod = llm_output.split(\"\\nBody: \", 1)\n    sub = sub.replace(\"Subject: \", \"\")\n    msg = MIMEText(bod)\n    msg[\"Subject\"] = sub\n    msg[\"From\"] = SENDER_EMAIL\n    msg[\"To\"] = \", \".join(RECIPIENTS)\n    try:\n        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:\n            server.starttls()\n            server.login(SENDER_EMAIL, SENDER_PASSWORD)\n            server.send_message(msg)\n    except Exception as e:\n        return f\"Failed to send notification: {e}\"",
+            "source_location": {
+              "file": "notifier.py",
+              "start_line": 17,
+              "start_col": 0,
+              "end_line": 51,
+              "end_col": 50
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "SENDER_PASSWORD",
+      "code": "SENDER_PASSWORD = os.getenv(\"APP_PASSWORD\")",
+      "start_line": 12,
+      "start_col": 0,
+      "end_line": 12,
+      "end_col": 43,
+      "file_path": "notifier.py",
+      "id": "9540efed70054d086f0d1bc014a33dea",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_ed9f4b8f",
+              "type": "import_reference",
+              "id": "b4c3d28e296393b59b49b455f0fd03d3",
+              "file": "notifier.py",
+              "line": 4,
+              "context": "import_dependency",
+              "code": "import os",
+              "source_location": {
+                "file": "notifier.py",
+                "start_line": 4,
+                "start_col": 0,
+                "end_line": 4,
+                "end_col": 9
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "send_notification": {
+            "id": "e34caf21e56a89cfa6d14ff45c951671",
+            "name": "send_notification",
+            "type": "function",
+            "file": "notifier.py",
+            "line": 17,
+            "context": "referenced_by_variable",
+            "code": "def send_notification(subject, body):\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \"Content-Type\": \"application/json\"}\n    raw_data = f\"Subject: {subject}\\nBody: {body}\"\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3, \n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"Generate a concise email subject and body for a critical CVE alert based on this data: {raw_data}. \"\n                    f\"Return exactly this format: 'Subject: Critical CVE Alert: CVE ID - <brief risk>'\\n'Body: <3-sentence summary including CVE ID, risk, and action>'\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        raise Exception(f\"LLM failed: {response.status_code}\")\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    sub, bod = llm_output.split(\"\\nBody: \", 1)\n    sub = sub.replace(\"Subject: \", \"\")\n    msg = MIMEText(bod)\n    msg[\"Subject\"] = sub\n    msg[\"From\"] = SENDER_EMAIL\n    msg[\"To\"] = \", \".join(RECIPIENTS)\n    try:\n        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:\n            server.starttls()\n            server.login(SENDER_EMAIL, SENDER_PASSWORD)\n            server.send_message(msg)\n    except Exception as e:\n        return f\"Failed to send notification: {e}\"",
+            "source_location": {
+              "file": "notifier.py",
+              "start_line": 17,
+              "start_col": 0,
+              "end_line": 51,
+              "end_col": 50
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "RECIPIENTS",
+      "code": "RECIPIENTS = [\"psprapha@gmail.com\"]",
+      "start_line": 13,
+      "start_col": 0,
+      "end_line": 13,
+      "end_col": 35,
+      "file_path": "notifier.py",
+      "id": "044a1609e76b8c8a8e47948a7d3b070c",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "send_notification": {
+            "id": "e34caf21e56a89cfa6d14ff45c951671",
+            "name": "send_notification",
+            "type": "function",
+            "file": "notifier.py",
+            "line": 17,
+            "context": "referenced_by_variable",
+            "code": "def send_notification(subject, body):\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \"Content-Type\": \"application/json\"}\n    raw_data = f\"Subject: {subject}\\nBody: {body}\"\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3, \n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"Generate a concise email subject and body for a critical CVE alert based on this data: {raw_data}. \"\n                    f\"Return exactly this format: 'Subject: Critical CVE Alert: CVE ID - <brief risk>'\\n'Body: <3-sentence summary including CVE ID, risk, and action>'\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        raise Exception(f\"LLM failed: {response.status_code}\")\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    sub, bod = llm_output.split(\"\\nBody: \", 1)\n    sub = sub.replace(\"Subject: \", \"\")\n    msg = MIMEText(bod)\n    msg[\"Subject\"] = sub\n    msg[\"From\"] = SENDER_EMAIL\n    msg[\"To\"] = \", \".join(RECIPIENTS)\n    try:\n        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:\n            server.starttls()\n            server.login(SENDER_EMAIL, SENDER_PASSWORD)\n            server.send_message(msg)\n    except Exception as e:\n        return f\"Failed to send notification: {e}\"",
+            "source_location": {
+              "file": "notifier.py",
+              "start_line": 17,
+              "start_col": 0,
+              "end_line": 51,
+              "end_col": 50
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "api_key",
+      "code": "api_key = os.getenv(\"OPENAIROUTER_key\")",
+      "start_line": 14,
+      "start_col": 0,
+      "end_line": 14,
+      "end_col": 39,
+      "file_path": "notifier.py",
+      "id": "64417c3a66f117c11ff16f5b60cd655a",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_ed9f4b8f",
+              "type": "import_reference",
+              "id": "b4c3d28e296393b59b49b455f0fd03d3",
+              "file": "notifier.py",
+              "line": 4,
+              "context": "import_dependency",
+              "code": "import os",
+              "source_location": {
+                "file": "notifier.py",
+                "start_line": 4,
+                "start_col": 0,
+                "end_line": 4,
+                "end_col": 9
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "send_notification": {
+            "id": "e34caf21e56a89cfa6d14ff45c951671",
+            "name": "send_notification",
+            "type": "function",
+            "file": "notifier.py",
+            "line": 17,
+            "context": "referenced_by_variable",
+            "code": "def send_notification(subject, body):\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \"Content-Type\": \"application/json\"}\n    raw_data = f\"Subject: {subject}\\nBody: {body}\"\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3, \n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"Generate a concise email subject and body for a critical CVE alert based on this data: {raw_data}. \"\n                    f\"Return exactly this format: 'Subject: Critical CVE Alert: CVE ID - <brief risk>'\\n'Body: <3-sentence summary including CVE ID, risk, and action>'\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        raise Exception(f\"LLM failed: {response.status_code}\")\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    sub, bod = llm_output.split(\"\\nBody: \", 1)\n    sub = sub.replace(\"Subject: \", \"\")\n    msg = MIMEText(bod)\n    msg[\"Subject\"] = sub\n    msg[\"From\"] = SENDER_EMAIL\n    msg[\"To\"] = \", \".join(RECIPIENTS)\n    try:\n        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:\n            server.starttls()\n            server.login(SENDER_EMAIL, SENDER_PASSWORD)\n            server.send_message(msg)\n    except Exception as e:\n        return f\"Failed to send notification: {e}\"",
+            "source_location": {
+              "file": "notifier.py",
+              "start_line": 17,
+              "start_col": 0,
+              "end_line": 51,
+              "end_col": 50
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "model",
+      "code": "model = os.getenv(\"OPEN_MODEL\")",
+      "start_line": 15,
+      "start_col": 0,
+      "end_line": 15,
+      "end_col": 31,
+      "file_path": "notifier.py",
+      "id": "736e01b1ea4617ac7b3324b3606ade99",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_ed9f4b8f",
+              "type": "import_reference",
+              "id": "b4c3d28e296393b59b49b455f0fd03d3",
+              "file": "notifier.py",
+              "line": 4,
+              "context": "import_dependency",
+              "code": "import os",
+              "source_location": {
+                "file": "notifier.py",
+                "start_line": 4,
+                "start_col": 0,
+                "end_line": 4,
+                "end_col": 9
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "send_notification": {
+            "id": "e34caf21e56a89cfa6d14ff45c951671",
+            "name": "send_notification",
+            "type": "function",
+            "file": "notifier.py",
+            "line": 17,
+            "context": "referenced_by_variable",
+            "code": "def send_notification(subject, body):\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \"Content-Type\": \"application/json\"}\n    raw_data = f\"Subject: {subject}\\nBody: {body}\"\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3, \n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"Generate a concise email subject and body for a critical CVE alert based on this data: {raw_data}. \"\n                    f\"Return exactly this format: 'Subject: Critical CVE Alert: CVE ID - <brief risk>'\\n'Body: <3-sentence summary including CVE ID, risk, and action>'\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        raise Exception(f\"LLM failed: {response.status_code}\")\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    sub, bod = llm_output.split(\"\\nBody: \", 1)\n    sub = sub.replace(\"Subject: \", \"\")\n    msg = MIMEText(bod)\n    msg[\"Subject\"] = sub\n    msg[\"From\"] = SENDER_EMAIL\n    msg[\"To\"] = \", \".join(RECIPIENTS)\n    try:\n        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:\n            server.starttls()\n            server.login(SENDER_EMAIL, SENDER_PASSWORD)\n            server.send_message(msg)\n    except Exception as e:\n        return f\"Failed to send notification: {e}\"",
+            "source_location": {
+              "file": "notifier.py",
+              "start_line": 17,
+              "start_col": 0,
+              "end_line": 51,
+              "end_col": 50
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "function",
+      "name": "send_notification",
+      "code": "def send_notification(subject, body):\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \"Content-Type\": \"application/json\"}\n    raw_data = f\"Subject: {subject}\\nBody: {body}\"\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3, \n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"Generate a concise email subject and body for a critical CVE alert based on this data: {raw_data}. \"\n                    f\"Return exactly this format: 'Subject: Critical CVE Alert: CVE ID - <brief risk>'\\n'Body: <3-sentence summary including CVE ID, risk, and action>'\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        raise Exception(f\"LLM failed: {response.status_code}\")\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    sub, bod = llm_output.split(\"\\nBody: \", 1)\n    sub = sub.replace(\"Subject: \", \"\")\n    msg = MIMEText(bod)\n    msg[\"Subject\"] = sub\n    msg[\"From\"] = SENDER_EMAIL\n    msg[\"To\"] = \", \".join(RECIPIENTS)\n    try:\n        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:\n            server.starttls()\n            server.login(SENDER_EMAIL, SENDER_PASSWORD)\n            server.send_message(msg)\n    except Exception as e:\n        return f\"Failed to send notification: {e}\"",
+      "start_line": 17,
+      "start_col": 0,
+      "end_line": 51,
+      "end_col": 50,
+      "file_path": "notifier.py",
+      "id": "e34caf21e56a89cfa6d14ff45c951671",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {
+            "api_key": {
+              "id": "64417c3a66f117c11ff16f5b60cd655a",
+              "name": "api_key",
+              "type": "variable",
+              "file": "notifier.py",
+              "line": 14,
+              "context": "variable_reference",
+              "source_code": "api_key",
+              "code": "api_key = os.getenv(\"OPENAIROUTER_key\")",
+              "source_location": {
+                "file": "notifier.py",
+                "start_line": 19,
+                "start_col": 42,
+                "end_line": 19,
+                "end_col": 49
+              }
+            },
+            "model": {
+              "id": "736e01b1ea4617ac7b3324b3606ade99",
+              "name": "model",
+              "type": "variable",
+              "file": "notifier.py",
+              "line": 15,
+              "context": "variable_reference",
+              "source_code": "model",
+              "code": "model = os.getenv(\"OPEN_MODEL\")",
+              "source_location": {
+                "file": "notifier.py",
+                "start_line": 22,
+                "start_col": 17,
+                "end_line": 22,
+                "end_col": 22
+              }
+            },
+            "SENDER_EMAIL": {
+              "id": "924cafc86130729c22aea6eccf9832f3",
+              "name": "SENDER_EMAIL",
+              "type": "variable",
+              "file": "notifier.py",
+              "line": 11,
+              "context": "variable_reference",
+              "source_code": "SENDER_EMAIL",
+              "code": "SENDER_EMAIL = \"nvps742@gmail.com\"",
+              "source_location": {
+                "file": "notifier.py",
+                "start_line": 43,
+                "start_col": 18,
+                "end_line": 43,
+                "end_col": 30
+              }
+            },
+            "RECIPIENTS": {
+              "id": "044a1609e76b8c8a8e47948a7d3b070c",
+              "name": "RECIPIENTS",
+              "type": "variable",
+              "file": "notifier.py",
+              "line": 13,
+              "context": "variable_reference",
+              "source_code": "RECIPIENTS",
+              "code": "RECIPIENTS = [\"psprapha@gmail.com\"]",
+              "source_location": {
+                "file": "notifier.py",
+                "start_line": 44,
+                "start_col": 26,
+                "end_line": 44,
+                "end_col": 36
+              }
+            },
+            "SMTP_SERVER": {
+              "id": "c2767e49a9cbf2dd707b6a20fe054c7b",
+              "name": "SMTP_SERVER",
+              "type": "variable",
+              "file": "notifier.py",
+              "line": 9,
+              "context": "variable_reference",
+              "source_code": "SMTP_SERVER",
+              "code": "SMTP_SERVER = \"smtp.gmail.com\"",
+              "source_location": {
+                "file": "notifier.py",
+                "start_line": 46,
+                "start_col": 26,
+                "end_line": 46,
+                "end_col": 37
+              }
+            },
+            "SMTP_PORT": {
+              "id": "ea467cd5362f8ce92319cd755ed19a13",
+              "name": "SMTP_PORT",
+              "type": "variable",
+              "file": "notifier.py",
+              "line": 10,
+              "context": "variable_reference",
+              "source_code": "SMTP_PORT",
+              "code": "SMTP_PORT = 587",
+              "source_location": {
+                "file": "notifier.py",
+                "start_line": 46,
+                "start_col": 39,
+                "end_line": 46,
+                "end_col": 48
+              }
+            },
+            "SENDER_PASSWORD": {
+              "id": "9540efed70054d086f0d1bc014a33dea",
+              "name": "SENDER_PASSWORD",
+              "type": "variable",
+              "file": "notifier.py",
+              "line": 12,
+              "context": "variable_reference",
+              "source_code": "SENDER_PASSWORD",
+              "code": "SENDER_PASSWORD = os.getenv(\"APP_PASSWORD\")",
+              "source_location": {
+                "file": "notifier.py",
+                "start_line": 48,
+                "start_col": 39,
+                "end_line": 48,
+                "end_col": 54
+              }
+            }
+          },
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_161ccf22",
+              "type": "import_reference",
+              "id": "2345ee96106003c3d14ad363c452b519",
+              "file": "notifier.py",
+              "line": 1,
+              "context": "import_dependency",
+              "code": "import smtplib",
+              "source_location": {
+                "file": "notifier.py",
+                "start_line": 1,
+                "start_col": 0,
+                "end_line": 1,
+                "end_col": 14
+              }
+            },
+            {
+              "name": "import_eddcc439",
+              "type": "import_reference",
+              "id": "3843773a3b99d014af7b2734743671f6",
+              "file": "notifier.py",
+              "line": 2,
+              "context": "import_dependency",
+              "code": "from email.mime.text import MIMEText",
+              "source_location": {
+                "file": "notifier.py",
+                "start_line": 2,
+                "start_col": 0,
+                "end_line": 2,
+                "end_col": 36
+              }
+            },
+            {
+              "name": "import_ed9f4b8f",
+              "type": "import_reference",
+              "id": "b4c3d28e296393b59b49b455f0fd03d3",
+              "file": "notifier.py",
+              "line": 4,
+              "context": "import_dependency",
+              "code": "import os",
+              "source_location": {
+                "file": "notifier.py",
+                "start_line": 4,
+                "start_col": 0,
+                "end_line": 4,
+                "end_col": 9
+              }
+            },
+            {
+              "name": "import_8e41e132",
+              "type": "import_reference",
+              "id": "4a1cf938a1fe43f2ee147263a779d8c8",
+              "file": "notifier.py",
+              "line": 5,
+              "context": "import_dependency",
+              "code": "import requests",
+              "source_location": {
+                "file": "notifier.py",
+                "start_line": 5,
+                "start_col": 0,
+                "end_line": 5,
+                "end_col": 15
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {
+          "notifier_agent": {
+            "id": "3689ea5b13813f22bb85c541b696fd53",
+            "name": "notifier_agent",
+            "type": "function",
+            "file": "notifier.py",
+            "line": 53,
+            "context": "referenced_by_function",
+            "code": "def notifier_agent(analyzed_data):\n    critical_cves = analyzed_data.get(\"Critical\", {})\n    for cve_id, det in critical_cves.items():\n        subject = f\"Critical CVE Alert: {cve_id}\"\n        body = f\"CVE: {cve_id}\\nRisk Assessment: {det['Risk Assessment']}\\nAction: {det['Action']}\"\n        send_notification(subject, body)\n    return \"Notification sent successfully!\"",
+            "source_location": {
+              "file": "notifier.py",
+              "start_line": 53,
+              "start_col": 0,
+              "end_line": 59,
+              "end_col": 44
+            }
+          }
+        },
+        "classes": {},
+        "variables": {
+          "notifier_agent": {
+            "id": "3689ea5b13813f22bb85c541b696fd53",
+            "name": "notifier_agent",
+            "type": "function",
+            "file": "notifier.py",
+            "line": 53,
+            "context": "referenced_by_variable",
+            "code": "def notifier_agent(analyzed_data):\n    critical_cves = analyzed_data.get(\"Critical\", {})\n    for cve_id, det in critical_cves.items():\n        subject = f\"Critical CVE Alert: {cve_id}\"\n        body = f\"CVE: {cve_id}\\nRisk Assessment: {det['Risk Assessment']}\\nAction: {det['Action']}\"\n        send_notification(subject, body)\n    return \"Notification sent successfully!\"",
+            "source_location": {
+              "file": "notifier.py",
+              "start_line": 53,
+              "start_col": 0,
+              "end_line": 59,
+              "end_col": 44
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "function",
+      "name": "notifier_agent",
+      "code": "def notifier_agent(analyzed_data):\n    critical_cves = analyzed_data.get(\"Critical\", {})\n    for cve_id, det in critical_cves.items():\n        subject = f\"Critical CVE Alert: {cve_id}\"\n        body = f\"CVE: {cve_id}\\nRisk Assessment: {det['Risk Assessment']}\\nAction: {det['Action']}\"\n        send_notification(subject, body)\n    return \"Notification sent successfully!\"",
+      "start_line": 53,
+      "start_col": 0,
+      "end_line": 59,
+      "end_col": 44,
+      "file_path": "notifier.py",
+      "id": "3689ea5b13813f22bb85c541b696fd53",
+      "dependencies": {
+        "tree": {
+          "functions": {
+            "send_notification": {
+              "id": "e34caf21e56a89cfa6d14ff45c951671",
+              "name": "send_notification",
+              "type": "function",
+              "file": "notifier.py",
+              "line": 17,
+              "context": "function_call",
+              "source_code": "send_notification(subject, body)",
+              "code": "def send_notification(subject, body):\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \"Content-Type\": \"application/json\"}\n    raw_data = f\"Subject: {subject}\\nBody: {body}\"\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3, \n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"Generate a concise email subject and body for a critical CVE alert based on this data: {raw_data}. \"\n                    f\"Return exactly this format: 'Subject: Critical CVE Alert: CVE ID - <brief risk>'\\n'Body: <3-sentence summary including CVE ID, risk, and action>'\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        raise Exception(f\"LLM failed: {response.status_code}\")\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    sub, bod = llm_output.split(\"\\nBody: \", 1)\n    sub = sub.replace(\"Subject: \", \"\")\n    msg = MIMEText(bod)\n    msg[\"Subject\"] = sub\n    msg[\"From\"] = SENDER_EMAIL\n    msg[\"To\"] = \", \".join(RECIPIENTS)\n    try:\n        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:\n            server.starttls()\n            server.login(SENDER_EMAIL, SENDER_PASSWORD)\n            server.send_message(msg)\n    except Exception as e:\n        return f\"Failed to send notification: {e}\"",
+              "source_location": {
+                "file": "notifier.py",
+                "start_line": 58,
+                "start_col": 8,
+                "end_line": 58,
+                "end_col": 40
+              }
+            }
+          },
+          "classes": {},
+          "variables": {
+            "send_notification": {
+              "id": "e34caf21e56a89cfa6d14ff45c951671",
+              "name": "send_notification",
+              "type": "variable",
+              "file": "notifier.py",
+              "line": 17,
+              "context": "variable_reference",
+              "source_code": "send_notification",
+              "code": "def send_notification(subject, body):\n    llm_url = \"https://openrouter.ai/api/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {api_key}\", \"Content-Type\": \"application/json\"}\n    raw_data = f\"Subject: {subject}\\nBody: {body}\"\n    data = {\n        \"model\": model,\n        \"temperature\": 0.3, \n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": (\n                    f\"Generate a concise email subject and body for a critical CVE alert based on this data: {raw_data}. \"\n                    f\"Return exactly this format: 'Subject: Critical CVE Alert: CVE ID - <brief risk>'\\n'Body: <3-sentence summary including CVE ID, risk, and action>'\"\n                )\n            }\n        ],\n    }\n    response = requests.post(llm_url, headers=headers, json=data)\n    if response.status_code != 200:\n        raise Exception(f\"LLM failed: {response.status_code}\")\n\n    llm_output = response.json()[\"choices\"][0][\"message\"][\"content\"].strip()\n    sub, bod = llm_output.split(\"\\nBody: \", 1)\n    sub = sub.replace(\"Subject: \", \"\")\n    msg = MIMEText(bod)\n    msg[\"Subject\"] = sub\n    msg[\"From\"] = SENDER_EMAIL\n    msg[\"To\"] = \", \".join(RECIPIENTS)\n    try:\n        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:\n            server.starttls()\n            server.login(SENDER_EMAIL, SENDER_PASSWORD)\n            server.send_message(msg)\n    except Exception as e:\n        return f\"Failed to send notification: {e}\"",
+              "source_location": {
+                "file": "notifier.py",
+                "start_line": 58,
+                "start_col": 8,
+                "end_line": 58,
+                "end_col": 25
+              }
+            }
+          },
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_2a7fc006",
+      "code": "import chromadb",
+      "start_line": 1,
+      "start_col": 0,
+      "end_line": 1,
+      "end_col": 15,
+      "file_path": "vector.py",
+      "id": "daf3512656f058027badd69a9ac552fe",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "145af1734de5fbf578a17ffd380a0146",
+            "name": "store_in_vector_db",
+            "type": "function",
+            "file": "vector.py",
+            "line": 5,
+            "context": "referenced_by",
+            "code": "def store_in_vector_db(analyzed_data):\n    client = chromadb.Client()\n\n    collection = client.get_or_create_collection(\"cve_analysis\")\n\n    documents = []\n    metadatas = []\n    ids = []\n\n    for category, cves in analyzed_data.items():\n        for cve_id, details in cves.items():\n            doc = f\"CVE: {cve_id}, Risk: {details.get('Risk Assessment', 'N/A')}, Action: {details.get('Action', 'N/A')}\"\n            metadata = {\"category\": category, \"cve_id\": cve_id}\n        documents.append(doc)\n        metadatas.append(metadata)\n        ids.append(cve_id)\n    embed= model.encode(documents)\n    collection.upsert(\n        documents=documents,\n        embeddings=embed,\n        metadatas=metadatas,\n        ids=ids\n    )\n    return collection",
+            "source_location": {
+              "file": "vector.py",
+              "start_line": 5,
+              "start_col": 0,
+              "end_line": 28,
+              "end_col": 21
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "import_statement",
+      "name": "import_db382cef",
+      "code": "from sentence_transformers import SentenceTransformer",
+      "start_line": 2,
+      "start_col": 0,
+      "end_line": 2,
+      "end_col": 53,
+      "file_path": "vector.py",
+      "id": "aeb352bcbd3afca38f8da5b46e3d88b3",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": [
+          {
+            "id": "6f12bc521d4610aeb9a220dcec97b8d9",
+            "name": "model",
+            "type": "variable_definition",
+            "file": "vector.py",
+            "line": 4,
+            "context": "referenced_by",
+            "code": "model = SentenceTransformer(\"all-MiniLM-L6-v2\")",
+            "source_location": {
+              "file": "vector.py",
+              "start_line": 4,
+              "start_col": 0,
+              "end_line": 4,
+              "end_col": 47
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "variable_definition",
+      "name": "model",
+      "code": "model = SentenceTransformer(\"all-MiniLM-L6-v2\")",
+      "start_line": 4,
+      "start_col": 0,
+      "end_line": 4,
+      "end_col": 47,
+      "file_path": "vector.py",
+      "id": "6f12bc521d4610aeb9a220dcec97b8d9",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {},
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_db382cef",
+              "type": "import_reference",
+              "id": "aeb352bcbd3afca38f8da5b46e3d88b3",
+              "file": "vector.py",
+              "line": 2,
+              "context": "import_dependency",
+              "code": "from sentence_transformers import SentenceTransformer",
+              "source_location": {
+                "file": "vector.py",
+                "start_line": 2,
+                "start_col": 0,
+                "end_line": 2,
+                "end_col": 53
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {
+          "store_in_vector_db": {
+            "id": "145af1734de5fbf578a17ffd380a0146",
+            "name": "store_in_vector_db",
+            "type": "function",
+            "file": "vector.py",
+            "line": 5,
+            "context": "referenced_by_variable",
+            "code": "def store_in_vector_db(analyzed_data):\n    client = chromadb.Client()\n\n    collection = client.get_or_create_collection(\"cve_analysis\")\n\n    documents = []\n    metadatas = []\n    ids = []\n\n    for category, cves in analyzed_data.items():\n        for cve_id, details in cves.items():\n            doc = f\"CVE: {cve_id}, Risk: {details.get('Risk Assessment', 'N/A')}, Action: {details.get('Action', 'N/A')}\"\n            metadata = {\"category\": category, \"cve_id\": cve_id}\n        documents.append(doc)\n        metadatas.append(metadata)\n        ids.append(cve_id)\n    embed= model.encode(documents)\n    collection.upsert(\n        documents=documents,\n        embeddings=embed,\n        metadatas=metadatas,\n        ids=ids\n    )\n    return collection",
+            "source_location": {
+              "file": "vector.py",
+              "start_line": 5,
+              "start_col": 0,
+              "end_line": 28,
+              "end_col": 21
+            }
+          },
+          "query_vector_db": {
+            "id": "ace2467d37f970a2561c4b698269e0b1",
+            "name": "query_vector_db",
+            "type": "function",
+            "file": "vector.py",
+            "line": 30,
+            "context": "referenced_by_variable",
+            "code": "def query_vector_db(collection, query_text):\n    query_embedding = model.encode([query_text])\n    results = collection.query(\n        query_embeddings=query_embedding,\n        n_results=5  \n    )\n    return results['documents'][0]",
+            "source_location": {
+              "file": "vector.py",
+              "start_line": 30,
+              "start_col": 0,
+              "end_line": 36,
+              "end_col": 34
+            }
+          }
+        },
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "function",
+      "name": "store_in_vector_db",
+      "code": "def store_in_vector_db(analyzed_data):\n    client = chromadb.Client()\n\n    collection = client.get_or_create_collection(\"cve_analysis\")\n\n    documents = []\n    metadatas = []\n    ids = []\n\n    for category, cves in analyzed_data.items():\n        for cve_id, details in cves.items():\n            doc = f\"CVE: {cve_id}, Risk: {details.get('Risk Assessment', 'N/A')}, Action: {details.get('Action', 'N/A')}\"\n            metadata = {\"category\": category, \"cve_id\": cve_id}\n        documents.append(doc)\n        metadatas.append(metadata)\n        ids.append(cve_id)\n    embed= model.encode(documents)\n    collection.upsert(\n        documents=documents,\n        embeddings=embed,\n        metadatas=metadatas,\n        ids=ids\n    )\n    return collection",
+      "start_line": 5,
+      "start_col": 0,
+      "end_line": 28,
+      "end_col": 21,
+      "file_path": "vector.py",
+      "id": "145af1734de5fbf578a17ffd380a0146",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {
+            "model": {
+              "id": "6f12bc521d4610aeb9a220dcec97b8d9",
+              "name": "model",
+              "type": "variable",
+              "file": "vector.py",
+              "line": 4,
+              "context": "variable_reference",
+              "source_code": "model",
+              "code": "model = SentenceTransformer(\"all-MiniLM-L6-v2\")",
+              "source_location": {
+                "file": "vector.py",
+                "start_line": 21,
+                "start_col": 11,
+                "end_line": 21,
+                "end_col": 16
+              }
+            }
+          },
+          "calls": [],
+          "inheritance": [],
+          "references": [
+            {
+              "name": "import_2a7fc006",
+              "type": "import_reference",
+              "id": "daf3512656f058027badd69a9ac552fe",
+              "file": "vector.py",
+              "line": 1,
+              "context": "import_dependency",
+              "code": "import chromadb",
+              "source_location": {
+                "file": "vector.py",
+                "start_line": 1,
+                "start_col": 0,
+                "end_line": 1,
+                "end_col": 15
+              }
+            }
+          ]
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": []
+      }
+    },
+    {
+      "type": "function",
+      "name": "query_vector_db",
+      "code": "def query_vector_db(collection, query_text):\n    query_embedding = model.encode([query_text])\n    results = collection.query(\n        query_embeddings=query_embedding,\n        n_results=5  \n    )\n    return results['documents'][0]",
+      "start_line": 30,
+      "start_col": 0,
+      "end_line": 36,
+      "end_col": 34,
+      "file_path": "vector.py",
+      "id": "ace2467d37f970a2561c4b698269e0b1",
+      "dependencies": {
+        "tree": {
+          "functions": {},
+          "classes": {},
+          "variables": {
+            "model": {
+              "id": "6f12bc521d4610aeb9a220dcec97b8d9",
+              "name": "model",
+              "type": "variable",
+              "file": "vector.py",
+              "line": 4,
+              "context": "variable_reference",
+              "source_code": "model",
+              "code": "model = SentenceTransformer(\"all-MiniLM-L6-v2\")",
+              "source_location": {
+                "file": "vector.py",
+                "start_line": 31,
+                "start_col": 22,
+                "end_line": 31,
+                "end_col": 27
+              }
+            }
+          },
+          "calls": [],
+          "inheritance": [],
+          "references": []
+        }
+      },
+      "referenced_by": {
+        "functions": {},
+        "classes": {},
+        "variables": {},
+        "inheritance": [],
+        "references": []
+      }
+    }
+  ],
+  "metadata": {
+    "last_analysis": "2025-04-15T13:14:28.107691",
+    "total_elements": 56,
+    "processed_files": [
+      "fetcher.py",
+      "app.py",
+      "analyzer.py",
+      "notifier.py",
+      "vector.py"
+    ]
+  }
+}
