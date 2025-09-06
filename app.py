@@ -1,8 +1,9 @@
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fetcher import fetch_cve
 from analyzer import analyzer
 from notifier import notifier_agent
-from fastapi.templating import Jinja2Templates
+#from fastapi.templating import Jinja2Templates
 
 
 app = FastAPI(
@@ -10,34 +11,35 @@ app = FastAPI(
     description="API service for scraping and delivering cybersecurity threat data.",
     version="0.1",
 )
-templates = Jinja2Templates(directory="templates")
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+#templates = Jinja2Templates(directory="templates")
 
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Cybersecurity Threat Intelligence API Service!"}
 
 @app.get("/fetch")
-def fetch_results(request: Request):
+def fetch_results():
     try:
-        results=fetch_cve()
-        # return {"message": "Fetched successfully!", "data": results}
-        return templates.TemplateResponse("fetcher.html", {"request": request, "data": results})
+        results = fetch_cve()
+        return {"message": "Fetched successfully!", "data": results}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
-# @app.get("/analyze")
-# def analyze_results():
-#     try:
-#         results=analyzer()
-#         return {"message": "Analysis completed successfully!", "data": results}
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-    
+
 @app.get("/analysis")
-def view_analysis(request: Request):
+def view_analysis():
     try:
-        results=analyzer()
-        return templates.TemplateResponse("analysis.html", {"request": request, "data": results})
+        results = analyzer()
+        return {"message": "Analysis completed successfully!", "data": results}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     

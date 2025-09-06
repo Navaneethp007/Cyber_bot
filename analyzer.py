@@ -6,7 +6,7 @@ import json
 import re
 
 load_dotenv()
-api_key=os.getenv("OPENAIROUTER_key")
+api_key=os.getenv("OPENAIROUTER_key") #currently expired
 model=os.getenv("OPEN_MODEL")
 res=fetch_cve()
 
@@ -16,7 +16,7 @@ def analyzer():
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
     }
-    str="\n".join([f"CVE ID: {item['CVE_ID']}, Description: {item['Description']}, Published Date: {item['Published_Date']} Last modified: {item['Last_Modified']}, Status:{item['Status']}" for item in res])
+    str="\n".join([f"CVE ID: {item['id']}, Description: {item['description']}, Published Date: {item['published']} Last modified: {item['lastModified']}, Status:{item['status']}, Score:{item['score']}, Severity:{item['severity']}, References:{item['references']}" for item in res])
     data={
         "model": model,
         "temperature": 0.1,

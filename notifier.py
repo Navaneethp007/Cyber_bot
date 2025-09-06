@@ -11,7 +11,7 @@ SMTP_PORT = 587
 SENDER_EMAIL = "nvps742@gmail.com"
 SENDER_PASSWORD = os.getenv("APP_PASSWORD")
 RECIPIENTS = ["psprapha@gmail.com"]
-api_key = os.getenv("OPENAIROUTER_key")
+api_key = os.getenv("OPENAIROUTER_key") #currently expired
 model = os.getenv("OPEN_MODEL")
 
 def send_notification(subject, body):

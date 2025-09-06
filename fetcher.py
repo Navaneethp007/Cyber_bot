@@ -9,7 +9,7 @@ model=os.getenv("OPEN_MODEL")
 
 def fetch_cve():
     url="https://services.nvd.nist.gov/rest/json/cves/2.0"
-    params={"resultsPerPage": 20, 
+    params={"resultsPerPage": 10, 
             "pubStartDate": "2024-12-01T00:00:00.000",
             "pubEndDate": "2025-03-28T00:00:00.000"
             }
@@ -47,15 +47,35 @@ def fetch_cve():
         status=i.get("cve", {}).get("vulnStatus", "N/A")
         pub_date=i.get("cve", {}).get("published", "N/A")
         last_mod=i.get("cve", {}).get("lastModified", "N/A")
+        metrics = i.get("cve", {}).get("metrics", {})
+        cvss_score = None
+        severity = None
+        
+        # Try to get CVSS v3.1 first, then v3.0, then v2.0
+        for version in ["cvssMetricV31", "cvssMetricV30", "cvssMetricV2"]:
+            if version in metrics and metrics[version]:
+                metric = metrics[version][0]  # Get first metric
+                if "cvssData" in metric:
+                    cvss_score = metric["cvssData"].get("baseScore")
+                    severity = metric["cvssData"].get("baseSeverity")
+                    break
+        
+        # Get references
+        references = []
+        refs = i.get("cve", {}).get("references", [])
+        for ref in refs:
+            if "url" in ref:
+                references.append(ref["url"])
         results.append({
-            "CVE_ID": cve_id,
-            "Description": val,
-            "Published_Date": pub_date,
-            "Last_Modified": last_mod,
-            "Status": status
+            "id": cve_id,
+            "description": val,
+            "published": pub_date,
+            "lastModified": last_mod,
+            "status": status,
+            "score": cvss_score,
+            "severity": severity,
+            "references": references
         })
     
     return results
-
-
-
+   
