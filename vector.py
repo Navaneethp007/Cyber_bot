@@ -1,9 +1,11 @@
-import chromadb
-from analyzer import analyzer  
+import chromadb 
+from sentence_transformers import SentenceTransformer
 
-def store_in_vector_db(analyzed_data: dict):
+model = SentenceTransformer("all-MiniLM-L6-v2")
+def store_in_vector_db(analyzed_data):
     client = chromadb.Client()
-    collection = client.create_collection("cve_analysis")
+
+    collection = client.get_or_create_collection("cve_analysis")
 
     documents = []
     metadatas = []
@@ -16,11 +18,20 @@ def store_in_vector_db(analyzed_data: dict):
         documents.append(doc)
         metadatas.append(metadata)
         ids.append(cve_id)
-
-    collection.add(
+    embed= model.encode(documents)
+    collection.upsert(
         documents=documents,
+        embeddings=embed,
         metadatas=metadatas,
         ids=ids
     )
-    
+    return collection
+
+def query_vector_db(collection, query_text):
+    query_embedding = model.encode([query_text])
+    results = collection.query(
+        query_embeddings=query_embedding,
+        n_results=5  
+    )
+    return results['documents'][0] 
 

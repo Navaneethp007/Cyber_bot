@@ -30,6 +30,14 @@ const features: Feature[] = [
     iconBg: 'bg-purple-100 dark:bg-purple-900/50'
   },
   {
+    href: '/chat',
+    title: 'AI Chat Assistant',
+    description: 'Interactive AI assistant for CVE queries, threat analysis, and security insights',
+    icon: '/globe.svg',
+    gradient: 'from-green-50 dark:from-green-900/20',
+    iconBg: 'bg-green-100 dark:bg-green-900/50'
+  },
+  {
     href: '/notify',
     title: 'Notifications',
     description: 'Stay informed with real-time alerts and customizable notifications',
@@ -81,7 +89,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {features.map((feature) => (
             <FeatureCard key={feature.href} feature={feature} />
           ))}

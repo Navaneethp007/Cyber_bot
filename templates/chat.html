@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CVE Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        #chatbox {
+            border: 1px solid #ccc;
+            padding: 15px;
+            height: 400px;
+            overflow-y: auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background-color: #97bfe9be;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        .bot-message {
+            background-color: #e9ecef;
+            color: #333;
+            margin-right: auto;
+            text-align: left;
+        }
+        .timestamp {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .input-container {
+            display: flex;
+            margin-top: 15px;
+            gap: 10px;
+        }
+        #input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .bot-message b {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>CVE Chat Interface</h1>
+    <div id="chatbox"></div>
+    <div class="input-container">
+        <input type="text" id="input" placeholder="Ask about CVEs...">
+        <button onclick="sendMessage(event)">Send</button>
+    </div>
+
+    <script>
+        const chatbox = document.getElementById("chatbox");
+        const input = document.getElementById("input");
+
+        function formatMessage(text) {
+            return text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+        }
+
+        function addMessage(text, isUser = false) {
+            const div = document.createElement("div");
+            div.className = isUser ? "message user-message" : "message bot-message";
+            div.innerHTML = formatMessage(text); 
+            const timestamp = document.createElement("div");
+            timestamp.className = "timestamp";
+            timestamp.textContent = new Date().toLocaleTimeString();
+            div.appendChild(timestamp);
+            chatbox.appendChild(div);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        async function sendMessage(event) {
+            event.preventDefault();
+            const query = input.value.trim();
+            if (!query) return;
+            addMessage("You: " + query, true);
+            input.value = "";
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: query })
+                });
+                const data = await response.json();
+                addMessage("Bot: " + (data.response || data.error));
+            } catch (error) {
+                addMessage("Bot: Error: " + error.message);
+            }
+        }
+
+        input.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                sendMessage(e);
+            }
+        });
+    </script>
+</body>
+</html>

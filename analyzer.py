@@ -6,7 +6,7 @@ import json
 import re
 
 load_dotenv()
-api_key=os.getenv("OPENAIROUTER_key") #currently expired
+api_key=os.getenv("OPENAIROUTER_key") 
 model=os.getenv("OPEN_MODEL")
 res=fetch_cve()
 

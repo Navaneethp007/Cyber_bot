@@ -11,12 +11,13 @@ SMTP_PORT = 587
 SENDER_EMAIL = "nvps742@gmail.com"
 SENDER_PASSWORD = os.getenv("APP_PASSWORD")
 RECIPIENTS = ["psprapha@gmail.com"]
-api_key = os.getenv("OPENAIROUTER_key") #currently expired
+api_key = os.getenv("OPENAIROUTER_key") 
 model = os.getenv("OPEN_MODEL")
 
 def send_notification(subject, body):
     llm_url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+    raw_data = f"Subject: {subject}\nBody: {body}"
     data = {
         "model": model,
         "temperature": 0.3, 
@@ -24,7 +25,8 @@ def send_notification(subject, body):
             {
                 "role": "user",
                 "content": (
-                    f"Generate a concise email subject and body for a critical CVE alert based on this data. Subject:{subject}, Body:{body}. "
+                    f"Generate a concise email subject and body for a critical CVE alert based on this data: {raw_data}. "
+                    f"Return exactly this format: 'Subject: Critical CVE Alert: CVE ID - <brief risk>'\n'Body: <3-sentence summary including CVE ID, risk, and action>'"
                 )
             }
         ],

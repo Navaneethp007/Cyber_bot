@@ -34,3 +34,21 @@ export async function sendNotification(): Promise<NotificationResponse> {
     throw error;
   }
 }
+
+export async function sendChatMessage(query: string): Promise<{ response?: string; error?: string }> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query }),
+    });
+    
+    if (!response.ok) throw new Error('Failed to send chat message');
+    return await response.json();
+  } catch (error) {
+    console.error('Error sending chat message:', error);
+    throw error;
+  }
+}
