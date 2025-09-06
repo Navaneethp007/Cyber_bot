@@ -21,5 +21,6 @@ A FastAPI and Next.js-based web application that scrapes, analyzes, and provides
 ### Prerequisites
 - Python 3.12+
 - Poetry (for dependency management)
+- Node.js (for Next.js frontend)
 - OpenRouter API key (set in `.env`)
 
